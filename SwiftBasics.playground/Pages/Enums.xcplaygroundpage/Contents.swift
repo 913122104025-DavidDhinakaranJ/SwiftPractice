@@ -41,3 +41,39 @@ enum Beverage: String, CaseIterable {
 for beverage in Beverage.allCases {
     print(beverage)
 }
+
+//Enums with properties
+enum Visibility {
+    case visible, hidden
+    
+    var isVisible: Bool {
+        switch self {
+        case .visible:
+            return true
+        case .hidden:
+            return false
+        }
+    }
+}
+let visibilityStatus = Visibility.hidden
+print(visibilityStatus.isVisible)
+
+//Enums with methods
+enum TrafficLight {
+    case red, green, yellow
+    
+    mutating func changeLight() {
+        switch self {
+        case .red:
+            self = .green
+        case .green:
+            self = .yellow
+        case .yellow:
+            self = .red
+        }
+    }
+}
+var light: TrafficLight = .red
+light.changeLight()
+light.changeLight()
+

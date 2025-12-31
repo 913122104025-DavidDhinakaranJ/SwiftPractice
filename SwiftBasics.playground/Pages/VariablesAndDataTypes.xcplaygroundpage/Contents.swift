@@ -53,3 +53,8 @@ let anyValue: Any = stringValue
 let anyValue2: Any = 5.0
 let intValue2: Int? = anyValue2 as? Int  //Optional Downcasting
 let doubleValue2: Double = anyValue2 as! Double  //Forced Downcasting
+
+//Overflow operation
+let maxValue: Int8 = Int8.max
+let nextValue: Int8 = maxValue &+ 1  //&+, &-, &* are overflow operators
+print(nextValue)

@@ -36,3 +36,32 @@ func outerFunction() {
 outerFunction()
 
 print(1...5)
+
+//Assigning function to variables
+let swapper: (inout Int, inout Int) -> Void = swap
+swapper(&x, &y)
+print("x: \(x), y: \(y)")
+
+//Passing functions as arguments
+func performOperation(_ a: Int, _ b: Int, _ operation: (Int, Int) -> Int) -> Int {
+    return operation(a, b)
+}
+
+func add(_ a: Int, _ b: Int) -> Int {
+    return a + b
+}
+
+func multiply(_ a: Int, _ b: Int) -> Int {
+    return a * b
+}
+
+let result1 = performOperation(5, 3, add)
+let result2 = performOperation(5, 3, multiply)
+
+//Returning function
+func makeAdder() -> (Int, Int) -> Int {
+    return (+)
+}
+
+let addFunction = makeAdder()
+let result3 = addFunction(5, 3)
