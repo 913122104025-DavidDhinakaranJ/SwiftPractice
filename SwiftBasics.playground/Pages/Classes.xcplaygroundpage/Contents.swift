@@ -35,8 +35,13 @@ do {
 //Inheritance
 class ParentClass {
     var text: String
+    
     required init(text: String) {
         self.text = text
+    }
+    
+    func printText() {
+        print(text)
     }
 }
 
@@ -51,6 +56,10 @@ class ChildClass: ParentClass {
     required init(text: String) {
         self.number = 0
         super.init(text: text)
+    }
+    
+    override func printText() {
+        print("\(text) - \(number)")
     }
 }
 

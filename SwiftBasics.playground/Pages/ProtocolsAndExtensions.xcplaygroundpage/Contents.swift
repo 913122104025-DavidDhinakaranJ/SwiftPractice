@@ -1,0 +1,69 @@
+protocol Identifiable {
+    var id: String { get }
+}
+
+protocol Drivable {
+    func drive()
+}
+
+//Protocol Inheritance
+protocol Vehicle: Drivable, Identifiable {
+    var name: String { get }
+    var speed: Int { get }
+}
+
+//Protocol Extension
+extension Vehicle {
+    var description: String {
+        "\(name), \(speed) mph"
+    }
+}
+
+struct Car: Vehicle {
+    var id: String
+    var name: String
+    var speed: Int
+    
+    func drive() {
+        print("Driving Car")
+    }
+}
+
+struct Bicycle: Vehicle {
+    var id: String
+    var name: String
+    var speed: Int
+    
+    func drive() {
+        print("Driving Bicycle")
+    }
+}
+
+let car: Vehicle = Car(id: "C101", name: "Corolla", speed: 60)
+let bike: Vehicle = Bicycle(id: "B101", name: "Schwinn", speed: 20)
+
+car.drive()
+bike.drive()
+
+print(car.description)
+print(bike.description)
+
+//Default Implementation
+extension Vehicle {
+    func drive() {
+        print("Driving Vehicle")
+    }
+}
+
+struct Plane: Vehicle {
+    var id: String
+    var name: String
+    var speed: Int
+}
+
+let plane: Vehicle = Plane(id: "P101", name: "Boeing 737", speed: 500)
+
+plane.drive()
+
+//Protocol as types
+
