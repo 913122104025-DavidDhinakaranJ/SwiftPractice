@@ -88,10 +88,8 @@ struct AnyStorage<Value>: Storage {
     }
 }
 
-var intStorage: AnyStorage<Int>
-intStorage = AnyStorage(IntStorage())
+var intStorage = AnyStorage(IntStorage())
 intStorage.store(5)
 
-var stringStorage: AnyStorage<String>
-stringStorage = AnyStorage(StringStorage())
+var stringStorage = AnyStorage(StringStorage())
 stringStorage.store("Hello")

@@ -65,5 +65,39 @@ let plane: Vehicle = Plane(id: "P101", name: "Boeing 737", speed: 500)
 
 plane.drive()
 
-//Protocol as types
+//Opaque(some) - Static Dispatch
+protocol Animal {
+    func makeSound()
+}
 
+struct Dog: Animal {
+    var isHappy: Bool = true
+    func makeSound() { print("Woof!") }
+}
+
+struct Cat: Animal {
+    var isNaughty: Bool = true
+    func makeSound() { print("Meow!") }
+}
+
+func getAnimal() -> some Animal {
+    return Dog()
+}
+
+func run() {
+    let animal = getAnimal()
+    animal.makeSound()
+}
+run()
+
+var mixedAnimal: [some Animal] = [Dog()]
+type(of: mixedAnimal)
+
+//Existential(any) - Dynamic Dispatch
+var pet: any Animal = Dog()
+pet.makeSound()
+
+var mixedPet: [any Animal] = [Dog(), Cat()]
+for pet in mixedPet {
+    pet.makeSound()
+}
