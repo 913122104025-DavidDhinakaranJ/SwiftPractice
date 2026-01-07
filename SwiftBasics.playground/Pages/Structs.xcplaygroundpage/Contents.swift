@@ -1,5 +1,6 @@
 struct TestStructure {
     var text: String
+    static let anotherText: String = "Static Text"
     
     func printText() {
         print(text)
@@ -9,7 +10,7 @@ struct TestStructure {
 let test1 = TestStructure(text: "Hello, World!")
 var test2 = test1                // Pass by value
 test2.text = "Goodbye, World!"
-print(test1.text, test2.text)  
+print(test1.text, test2.text)
 
 //Failable Initializer
 struct User {

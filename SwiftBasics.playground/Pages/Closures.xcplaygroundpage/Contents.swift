@@ -1,5 +1,7 @@
+import Foundation
+
 //Assigning closure to variable
-let myClosure: (String) -> Void = { (name: String) in
+let myClosure = { (name: String) in
     print("Hello, \(name)!")
 }
 myClosure("World")
@@ -40,3 +42,46 @@ counter1()
 
 let counter2 = generateCounter()
 counter2() 
+
+//Escaping Closures and Completion Handlers
+func fetchUser(completion: @escaping (String) -> Void) {
+    print("Start fetching...")
+    
+    DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+        let username = "Steve Jobs"
+        print("Data received. Calling completion.")
+        completion(username)
+    }
+}
+
+print("Calling function")
+fetchUser { name in
+    print("User is: \(name)")
+}
+print("Function returned")
+
+var completionHandlers: [() -> Void] = []
+
+@MainActor
+func addHandler(_ handler: @escaping () -> Void) {
+    completionHandlers.append(handler)
+}
+
+addHandler {
+    print("Hello from background!")
+}
+
+addHandler {
+    print("Hello from main thread!")
+}
+
+completionHandlers.forEach { $0() }
+
+//Autoclosures
+func evaluate(completion: @autoclosure () -> Int, if condition: @autoclosure () -> Bool) {
+    if condition() {
+        print(completion())
+    }
+}
+
+evaluate(completion: 5 * 10, if: 5 < 10)

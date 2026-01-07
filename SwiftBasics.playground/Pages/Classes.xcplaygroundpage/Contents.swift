@@ -24,6 +24,7 @@ class TestClass {
 do {
     let testClass: TestClass = TestClass(text: "Hello, World!", number: 10)
     testClass.testFunction()
+    TestClass.staticText
     
     let testClass2: TestClass = testClass  //Pass by reference
     testClass2.number = 20  //This change affects both the variables

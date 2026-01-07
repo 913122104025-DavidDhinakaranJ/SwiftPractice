@@ -35,10 +35,8 @@ func outerFunction() {
 }
 outerFunction()
 
-print(1...5)
-
 //Assigning function to variables
-let swapper: (inout Int, inout Int) -> Void = swap
+let swapper = swap
 swapper(&x, &y)
 print("x: \(x), y: \(y)")
 

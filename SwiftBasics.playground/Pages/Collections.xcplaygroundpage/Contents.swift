@@ -52,6 +52,9 @@ var ages: [String: Int] = ["Alice": 30, "Bob": 25, "Charlie": 35]  //Unordered
 print(ages["Alice", default: 0])
 print(ages.count)
 
+var ages2: [String: Int] = ["Dave": 20, "Einstein": 50]
+ages.merge(ages2) { (current, new) in new}
+
 ages["Alice"] = nil  //Remove by setting nil
 ages.removeValue(forKey: "Bob")
 print(ages)

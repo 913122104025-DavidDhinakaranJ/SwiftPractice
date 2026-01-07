@@ -1,5 +1,3 @@
-import UIKit
-
 print("Hello, playground")
 
 var variable = 10
@@ -58,3 +56,7 @@ let doubleValue2: Double = anyValue2 as! Double  //Forced Downcasting
 let maxValue: Int8 = Int8.max
 let nextValue: Int8 = maxValue &+ 1  //&+, &-, &* are overflow operators
 print(nextValue)
+
+//TypeAlias
+typealias Hour = Int
+var quarterHour: Hour = 15

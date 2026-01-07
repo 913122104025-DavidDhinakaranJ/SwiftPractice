@@ -101,3 +101,47 @@ var mixedPet: [any Animal] = [Dog(), Cat()]
 for pet in mixedPet {
     pet.makeSound()
 }
+
+
+//Delegation Pattern
+//The Contract
+protocol WeatherViewDelegate: AnyObject {
+    func didTapRefresh()
+    func didSelectCity(_ city: String)
+}
+
+//The Delegator
+class WeatherView {
+    weak var delegate: WeatherViewDelegate?
+    
+    func userTappedRefreshButton() {
+        print("View: User tapped refresh button. Calling delegate...")
+        delegate?.didTapRefresh()
+    }
+    
+    func userSelectedCity(name: String) {
+        print("View: User selected \(name). Calling delegate...")
+        delegate?.didSelectCity(name)
+    }
+}
+
+//The Delegate
+class WeatherController: WeatherViewDelegate {
+    let myView = WeatherView()
+    
+    init() {
+        myView.delegate = self
+    }
+    
+    func didTapRefresh() {
+        print("Controller: User tapped refresh. Fetching new weather data from API...")
+    }
+    
+    func didSelectCity(_ city: String) {
+        print("Controller: User selected \(city). Navigating to city details...")
+    }
+}
+
+let controller = WeatherController()
+controller.myView.userTappedRefreshButton()
+controller.myView.userSelectedCity(name: "New York")
