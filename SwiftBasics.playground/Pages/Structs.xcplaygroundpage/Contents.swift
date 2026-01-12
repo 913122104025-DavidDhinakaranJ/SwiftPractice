@@ -33,6 +33,10 @@ struct Point {
         let b = Double(y)
         return (a*a + b*b).squareRoot()
     }
+    
+    static func +(lhs: Point, rhs: Point) -> Point {
+        return Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
 }
 
 let point = Point(x: 4, y: 3)
@@ -76,3 +80,123 @@ struct DataManager {
 
 var dataManager = DataManager()
 dataManager.data
+
+//Type Property and method
+struct LevelTracker {
+    nonisolated(unsafe) static var highestUnlockedLevel: Int = 1
+    var currentLevel: Int = 1
+    
+    static func unlock(_ level: Int) {
+        if level > highestUnlockedLevel {
+            highestUnlockedLevel = level
+        }
+    }
+    
+    static func isUnlocked(_ level: Int) -> Bool {
+        return level <= highestUnlockedLevel
+    }
+    
+    mutating func advance(to level: Int) {
+        if LevelTracker.isUnlocked(level) {
+            currentLevel = level
+        } else {
+            print("Level \(level) is locked.")
+        }
+    }
+}
+
+LevelTracker.unlock(10)
+LevelTracker.highestUnlockedLevel
+LevelTracker.isUnlocked(5)
+
+//Property Wrappers
+@propertyWrapper
+struct HighScore {
+    private var number: Int
+    private(set) var projectedValue: Bool
+    var wrappedValue: Int {
+        get { number }
+        set {
+            if(newValue > number) {
+                projectedValue = true
+                number = newValue
+            } else {
+                projectedValue = false
+            }
+        }
+    }
+    
+    init() {
+        self.number = 0;
+        self.projectedValue = false
+    }
+}
+
+struct Player {
+    @HighScore var score: Int
+    
+    func isHighScore() -> Bool {
+        return $score
+    }
+}
+
+var player = Player()
+player.score = 100
+player.isHighScore()
+player.score = 50
+player.isHighScore()
+
+print(player.score)
+
+//Subscript
+struct Matrix {
+    var rows: Int, columns: Int
+    var grid: [Int]
+    
+    init(rows: Int, columns: Int) {
+        self.rows = rows
+        self.columns = columns
+        self.grid = Array(repeating: 0, count: rows * columns)
+    }
+    
+    subscript(row: Int, column: Int) -> Int {
+        get {
+            return grid[(row * columns) + column]
+        }
+        set {
+            grid[(row * columns) + column] = newValue
+        }
+    }
+    
+    func display() {
+        for i in 0..<rows {
+            for j in 0..<columns {
+                print("\(self[i, j])", terminator: " ")
+            }
+            print()
+        }
+    }
+}
+
+var matrix = Matrix(rows: 2, columns: 2)
+matrix[0, 0] = 0
+matrix[0, 1] = 1
+matrix[1, 0] = 2
+matrix[1, 1] = 3
+matrix.display()
+
+//Nested types
+struct Card {
+    enum Suit: Character {
+        case spades = "♠", hearts = "♡", diamonds = "♢", clubs = "♣"
+    }
+    
+    enum Rank: Int {
+        case two = 2, three, four, five, six, seven, eight, nine, ten, jack, queen, king, ace
+    }
+    
+    let rank: Rank
+    let suit: Suit
+}
+
+let spadeKing = Card(rank: .king, suit: .spades)

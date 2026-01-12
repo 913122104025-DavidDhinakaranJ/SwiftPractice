@@ -65,3 +65,32 @@ class ChildClass: ParentClass {
 }
 
 let parentObject: ParentClass = ChildClass(text: "Hello")
+
+//Type Property and Method
+//class keyword can be used on methods and computed properties which has to be overridden in subclass
+class LevelTracker {
+    nonisolated(unsafe) static var highestUnlockedLevel: Int = 1
+    var currentLevel: Int = 1
+    
+    class func unlock(_ level: Int) {
+        if level > highestUnlockedLevel {
+            highestUnlockedLevel = level
+        }
+    }
+    
+    static func isUnlocked(_ level: Int) -> Bool {
+        return level <= highestUnlockedLevel
+    }
+    
+    func advance(to level: Int) {
+        if LevelTracker.isUnlocked(level) {
+            currentLevel = level
+        } else {
+            print("Level \(level) is locked.")
+        }
+    }
+}
+
+LevelTracker.unlock(10)
+LevelTracker.highestUnlockedLevel
+LevelTracker.isUnlocked(5)

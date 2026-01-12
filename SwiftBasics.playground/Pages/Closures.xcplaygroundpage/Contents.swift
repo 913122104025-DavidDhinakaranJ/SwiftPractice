@@ -1,7 +1,7 @@
 import Foundation
 
 //Assigning closure to variable
-let myClosure = { (name: String) in
+let myClosure : (String) -> () = { (name: String) in
     print("Hello, \(name)!")
 }
 myClosure("World")
@@ -44,7 +44,7 @@ let counter2 = generateCounter()
 counter2() 
 
 //Escaping Closures and Completion Handlers
-func fetchUser(completion: @escaping (String) -> Void) {
+func fetchUser(completion: @escaping @Sendable (String) -> Void) {
     print("Start fetching...")
     
     DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
@@ -61,21 +61,36 @@ fetchUser { name in
 print("Function returned")
 
 var completionHandlers: [() -> Void] = []
-
-@MainActor
-func addHandler(_ handler: @escaping () -> Void) {
-    completionHandlers.append(handler)
+@MainActor func someFunctionWithEscapingClosure(completion: @escaping () -> Void) {
+    completionHandlers.append(completion)
 }
 
-addHandler {
-    print("Hello from background!")
+func someFunctionWithNonEscapingClosure(closure: () -> Void) {
+    closure()
 }
 
-addHandler {
-    print("Hello from main thread!")
+class SomeClass {
+    var x = 0
+    @MainActor func doSomething() {
+        someFunctionWithEscapingClosure { [weak self] in self?.x = 10 }
+        someFunctionWithNonEscapingClosure { x = 20 }
+    }
 }
 
-completionHandlers.forEach { $0() }
+let myClass = SomeClass()
+myClass.doSomething()
+print(myClass.x)
+
+completionHandlers.first?()
+print(myClass.x)
+
+struct someStruct {
+    var x = 0
+    @MainActor mutating func doSomething() {
+        //someFunctionWithEscapingClosure { x = 10 }
+        someFunctionWithNonEscapingClosure { x = 20 }
+    }
+}
 
 //Autoclosures
 func evaluate(completion: @autoclosure () -> Int, if condition: @autoclosure () -> Bool) {

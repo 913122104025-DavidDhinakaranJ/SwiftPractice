@@ -34,7 +34,7 @@ var car: Transport = .car(fuelType: "diesel")
 var train: Transport = .train(numberOfWagons: 42)
 
 //Iterate through enums
-enum Beverage: String, CaseIterable {
+enum Beverage: CaseIterable {
     case coffee, tea, juice
 }
 
@@ -76,4 +76,40 @@ enum TrafficLight {
 var light: TrafficLight = .red
 light.changeLight()
 light.changeLight()
+
+//Recursive Enumeration
+enum ArithmeticExpression {
+    case number(Int)
+    indirect case addition(ArithmeticExpression, ArithmeticExpression)
+    indirect case multiplication(ArithmeticExpression, ArithmeticExpression)
+}
+
+let five = ArithmeticExpression.number(5)
+let four = ArithmeticExpression.number(4)
+let sum = ArithmeticExpression.addition(five, four)
+let product = ArithmeticExpression.multiplication(sum, four)
+
+func evaluate(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case .number(let value):
+        return value
+    case .addition(let lhs, let rhs):
+        return evaluate(lhs) + evaluate(rhs)
+    case .multiplication(let lhs, let rhs):
+        return evaluate(lhs) * evaluate(rhs)
+    }
+}
+
+evaluate(product)
+
+//Type Subscript
+enum NumberWord: Int {
+    case one = 1, two, three, four, five, six, seven, eight, nine, ten
+    
+    static subscript(number: Int) -> NumberWord? {
+        return NumberWord(rawValue: number)
+    }
+}
+
+var seven = NumberWord[7]
 

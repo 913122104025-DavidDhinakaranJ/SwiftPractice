@@ -14,7 +14,7 @@ a multiline
 string.
 """
 
-var inferred = 10               //Type inference (implicit)
+var inferred = 10              //Type inference (implicit)
 print(type(of: inferred))
 
 var annotated: Double = 10     //Type annotation (explicit)
@@ -36,6 +36,8 @@ let fruitSummary = "I have \(apples + oranges) pieces of fruit."  //String inter
 //Type Casting
 let intValue: Int = 10
 let doubleValue: Double = Double(intValue)
+let hugeValue: Double = -10000000000000000000000.0
+//let hugeInt: Int = Int(hugeValue)   // We cannot convert Double value which is beyond the range of Int
 
 //Type Checking
 let value: Any = "A string"
@@ -60,3 +62,9 @@ print(nextValue)
 //TypeAlias
 typealias Hour = Int
 var quarterHour: Hour = 15
+
+//String Indexing
+let string = "Hello, World!"
+let firstCharacter: Character = string[string.startIndex]
+let lastCharacter: Character = string[string.index(before: string.endIndex)]
+let fifthCharacter: Character = string[string.index(string.startIndex, offsetBy: 4)]

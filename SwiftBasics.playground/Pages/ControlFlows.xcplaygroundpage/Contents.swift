@@ -46,3 +46,11 @@ outer: for i in 1...3 {
         print("i: \(i), j: \(j)")
     }
 }
+
+//Deferred Actions
+var score = 0
+while(score < 10) {
+    defer { print (score) }
+    defer {print ("The score is", terminator: " ")}  //Last specified defer runs first.
+    score += 1
+}
