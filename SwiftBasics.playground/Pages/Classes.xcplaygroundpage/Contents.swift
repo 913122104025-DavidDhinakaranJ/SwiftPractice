@@ -36,9 +36,11 @@ do {
 //Inheritance
 class ParentClass {
     var text: String
+    var number: Int
     
     required init(text: String) {
         self.text = text
+        self.number = 0
     }
     
     func printText() {
@@ -47,15 +49,18 @@ class ParentClass {
 }
 
 class ChildClass: ParentClass {
-    var number: Int
+    override var number: Int {
+        didSet {
+            print("Number changed from \(oldValue) to \(number)")
+        }
+    }
     
     init(text: String, number: Int) {
-        self.number = number
         super.init(text: text)
+        self.number = number
     }
     
     required init(text: String) {
-        self.number = 0
         super.init(text: text)
     }
     

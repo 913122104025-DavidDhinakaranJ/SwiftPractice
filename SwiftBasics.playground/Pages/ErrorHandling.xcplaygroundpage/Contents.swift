@@ -10,7 +10,6 @@ let mathError: MathError = .unknown
 //throws, try, catch
 func divide(_ a: Int, _ b: Int) throws(MathError) -> Int {
     guard b != 0 else { throw MathError.divisionByZero }
-    
     return a / b
 }
 

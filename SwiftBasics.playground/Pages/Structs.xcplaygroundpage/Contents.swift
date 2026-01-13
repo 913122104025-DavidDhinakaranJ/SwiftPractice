@@ -42,6 +42,7 @@ struct Point {
 let point = Point(x: 4, y: 3)
 print(point.distanceFromOrigin)
 
+
 //Property Observers - only for stored properties
 //willSet = Before changing value, didSet - After changing value
 struct Task {
