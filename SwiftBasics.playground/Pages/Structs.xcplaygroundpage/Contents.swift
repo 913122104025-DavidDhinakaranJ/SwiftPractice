@@ -160,19 +160,21 @@ struct Matrix {
         self.grid = Array(repeating: 0, count: rows * columns)
     }
     
-    subscript(row: Int, column: Int) -> Int {
+    subscript(row: Int, column: Int) -> Int? {
         get {
+            guard 0..<rows ~= row, 0..<columns ~= column else { return nil }
             return grid[(row * columns) + column]
         }
         set {
-            grid[(row * columns) + column] = newValue
+            guard 0..<rows ~= row, 0..<columns ~= column else { return }
+            grid[(row * columns) + column] = newValue ?? 0
         }
     }
     
     func display() {
         for i in 0..<rows {
             for j in 0..<columns {
-                print("\(self[i, j])", terminator: " ")
+                print("\(self[i, j] ?? 0)", terminator: " ")
             }
             print()
         }

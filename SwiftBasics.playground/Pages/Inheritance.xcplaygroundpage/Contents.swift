@@ -35,9 +35,13 @@ class Base {
     static func utility() {}                //static - not overridable
     final func baseOnly() {}                //final - not overridable
     var value: Int { 0 }                    //computed property
+    var text: String = "Text"
 }
 
 class Derived: Base {
     override class func kind() -> String { "Derived" }
     override var value: Int { 1 }
+    override var text: String {
+        didSet { print("Text set to \(text)") }  //overriding property observers
+    }
 }

@@ -27,6 +27,7 @@ do {
     TestClass.staticText
     
     let testClass2: TestClass = testClass  //Pass by reference
+    testClass === testClass2
     testClass2.number = 20  //This change affects both the variables
     
     print(testClass.number)
