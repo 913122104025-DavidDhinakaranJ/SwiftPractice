@@ -70,7 +70,9 @@ class Plane: Vehicle {
     }
 }
 
-vehicle = Plane(id: "P101", name: "Boeing 737", speed: 500)
+var plane: Plane = Plane(id: "P101", name: "Boeing 737", speed: 500)
+vehicle = plane as Vehicle
+vehicle.accelerate()
 
 vehicle.drive()
 Plane.getType()
@@ -110,8 +112,8 @@ extension Train: Drivable {
     }
 }
 
-//Adopting a Protocol Using a Synthesized Implementation
-struct User: Equatable {
+//Adopting a Protocol Using a Synthesized Implementation - works only if all the properties in that type conforms to that protocol
+struct User: Equatable, Hashable, Codable {  //Equatable and Hashable cannot be synthesized for classes
     let id: Int
     let name: String
 }
@@ -119,6 +121,25 @@ struct User: Equatable {
 var user1 = User(id: 1, name: "AAA")
 var user2 = User(id: 1, name: "AAA")
 user1 == user2    //Synthesized '==' compares all stored properties in declaration order
+
+//Implicit Conformance to a Protocol - Copyable, Sendable - for value types, BitwiseCopyable - for struct / enum containing only other BitwiseCopyable types.
+//Suppressing implicit conformance
+struct NonCopyable: ~Copyable {}
+var nonCopyableVar = NonCopyable()
+//var anotherNonCopyableVar = nonCopyableVar  //It throws error as the struct does not conform to Copyable
+
+//Class-Only Protocols
+protocol SomeClassOnlyProtocol: AnyObject {}
+//struct ConformingToClassOnlyProtocol : SomeClassOnlyProtocol{}  //It will throw an error
+
+//Protocol Composition
+func service(_ item: Identifiable & Drivable) {
+    print("Servicing item with id: \(item.id)")
+    item.drive()
+}
+
+service(Car(id: "C001", name: "Toyota", speed: 60))
+service(Plane(id: "P101", name: "Boeing 737", speed: 500))
 
 //Delegation Pattern
 //The Contract
@@ -163,6 +184,8 @@ let controller = WeatherController()
 controller.myView.userTappedRefreshButton()
 controller.myView.userSelectedCity(name: "New York")
 
+
+//Opaque and Boxed Protocol Types
 //Opaque(some) - Static Dispatch
 protocol Animal {
     func makeSound()
@@ -182,14 +205,8 @@ func getAnimal() -> some Animal {
     return Dog()
 }
 
-func run() {
-    let animal = getAnimal()
-    animal.makeSound()
-}
-run()
-
-var someAnimals: [some Animal] = [Dog()]
-type(of: someAnimals)
+let animal = getAnimal()
+animal.makeSound()
 
 //Existential(any) - Dynamic Dispatch
 var pet: any Animal = Dog()

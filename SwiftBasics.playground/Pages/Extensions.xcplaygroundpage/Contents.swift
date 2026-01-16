@@ -83,3 +83,5 @@ extension Integer {
 }
 
 let intFromString: Integer? = Integer(string: "5")
+
+//Extensions cannot support inheritance in both classes and protocols.
