@@ -19,10 +19,15 @@ extension Int {
         let max = range.upperBound
         return Int.random(in: min..<(max + 1))
     }
+    static prefix func ++ (num: inout Int) -> Int {
+        num = num &+ 1
+        return num
+    }
 }
 var count: Int = 0
 count.increment()
 count.decrement()
+var count2 = ++count
 var randomNum: Int = .random(in: 1...10)
 
 //Adding Subscripts
