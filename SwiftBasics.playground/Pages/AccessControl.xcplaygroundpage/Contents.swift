@@ -53,9 +53,7 @@ open class OpenSuperclass {
 private class PrivateSubclass: OpenSuperclass {
     //Required Visibility = min(Superclass Property Visibility, Current Subclass Visibility)
     override fileprivate var openProperty: String { "Overridden Private" }
-    
     private init() { super.init(flag: false) }
-    
     fileprivate required init(flag: Bool) { super.init(flag: flag) }
 }
 

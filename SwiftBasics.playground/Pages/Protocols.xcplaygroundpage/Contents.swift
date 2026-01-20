@@ -184,7 +184,6 @@ let controller = WeatherController()
 controller.myView.userTappedRefreshButton()
 controller.myView.userSelectedCity(name: "New York")
 
-
 //Opaque and Boxed Protocol Types
 //Opaque(some) - Static Dispatch
 protocol Animal {
@@ -205,8 +204,10 @@ func getAnimal() -> some Animal {
     return Dog()
 }
 
-let animal = getAnimal()
-animal.makeSound()
+do {
+    let animal = getAnimal()
+    animal.makeSound()
+}
 
 //Existential(any) - Dynamic Dispatch
 var pet: any Animal = Dog()
