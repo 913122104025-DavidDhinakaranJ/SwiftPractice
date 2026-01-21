@@ -205,12 +205,14 @@ func getAnimal() -> some Animal {
 }
 
 do {
-    let animal = getAnimal()
+    //let animal: some animal  //We have to assign value when declaring a variable with opaque type
+    let animal: some Animal = getAnimal()
     animal.makeSound()
 }
 
 //Existential(any) - Dynamic Dispatch
-var pet: any Animal = Dog()
+var pet: any Animal
+pet = Dog()
 pet.makeSound()
 
 var anyPets: [any Animal] = [Dog(), Cat()]
