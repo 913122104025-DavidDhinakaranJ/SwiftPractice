@@ -5,7 +5,7 @@ public class ConsoleAuthView {
         self.authController = authController
     }
     
-    public func handleRegistration() -> AuthenticatableUser? {
+    public func handleRegistration() -> (any AuthenticatableUser)? {
         let username = ConsoleAuthInputUtil.readUserName(isValidationEnabled: true)
         let password = ConsoleAuthInputUtil.readPassword(isValidationEnabled: true)
         
@@ -21,7 +21,7 @@ public class ConsoleAuthView {
         return nil
     }
     
-    public func handleLogin() -> AuthenticatableUser? {
+    public func handleLogin() -> (any AuthenticatableUser)? {
         let username = ConsoleAuthInputUtil.readUserName()
         let password = ConsoleAuthInputUtil.readPassword()
         
@@ -55,7 +55,7 @@ public class ConsoleAuthView {
         }
         
         do {
-            try authController.changePassword(username: user.getUserName(), oldPassword: oldPassword, newPassword: newPassword)
+            try authController.changePassword(username: user.username, oldPassword: oldPassword, newPassword: newPassword)
             print("Password changed successfully.")
         } catch AuthError.incorrectPassword {
             print("Incorrect Old Password")

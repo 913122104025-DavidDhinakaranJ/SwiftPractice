@@ -1,3 +1,3 @@
 public protocol AuthenticatableUserFactory {
-    func createUser(username: String, password: String) -> AuthenticatableUser
+    func createUser(username: String, password: String) -> any AuthenticatableUser
 }
