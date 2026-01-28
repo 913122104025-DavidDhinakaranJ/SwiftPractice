@@ -28,10 +28,10 @@ public class AuthControllerImpl: AuthController {
     public func changePassword(username: String, oldPassword: String, newPassword: String) throws(AuthError) {
         let user = userRepository.find(user: username)
         
-        if user == nil { throw .userNotFound }
-        if !user!.validate(password: oldPassword) { throw .incorrectPassword }
+        guard let user = user else { throw .userNotFound }
+        if !user.validate(password: oldPassword) { throw .incorrectPassword }
         
-        user!.changePassword(newPassword: newPassword)
-        userRepository.save(user: user!)
+        user.changePassword(newPassword: newPassword)
+        userRepository.save(user: user)
     }
 }

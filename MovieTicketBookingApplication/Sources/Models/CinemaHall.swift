@@ -29,7 +29,7 @@ public struct CinemaHall {
         var rowName: String = ""
         var currentIndex = index + 1
         
-        while index > 0 {
+        while currentIndex > 0 {
             currentIndex -= 1
             
             let remainder = currentIndex % 26

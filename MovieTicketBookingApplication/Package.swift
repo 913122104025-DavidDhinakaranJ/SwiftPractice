@@ -30,7 +30,8 @@ let package = Package(
             name: "Controllers",
             dependencies: [
                 "Models",
-                "Errors"
+                "Errors",
+                "Repositories"
             ]
         ),
         .target(name: "Errors"),
@@ -56,7 +57,15 @@ let package = Package(
             ]
         ),
         .target(
-            name: "Views"
+            name: "Views",
+            dependencies: [
+                "Contexts",
+                "Controllers",
+                "Errors",
+                "Models",
+                "Utils",
+                .product(name: "AuthLib", package: "AuthLib")
+            ]
         ),
     ]
 )

@@ -1,7 +1,7 @@
 struct ConsoleAuthInputUtil {
-    static func readUserName(prompt: String = "Enter password:", isValidationEnabled: Bool = false) -> String {
+    static func readUserName(prompt: String = "Enter Username", isValidationEnabled: Bool = false) -> String {
         readInput: while true {
-            print(prompt)
+            print(prompt, terminator: ": ")
             let username = readLine() ?? ""
             if !isValidationEnabled { return username }
             
@@ -21,12 +21,12 @@ struct ConsoleAuthInputUtil {
         }
     }
     
-    static func readPassword(prompt: String = "Enter password:", isValidationEnabled: Bool = false) -> String {
+    static func readPassword(prompt: String = "Enter password", isValidationEnabled: Bool = false) -> String {
         let MIN_PASSWORD_LENGTH = 8
         let MAX_PASSWORD_LENGTH = 64
         let SPECIAL_CHARACTERS = "@$!%*?&"
         while true {
-            print(prompt)
+            print(prompt, terminator: ": ")
             let password = readLine() ?? ""
             if !isValidationEnabled { return password }
             

@@ -10,10 +10,11 @@ public final class ApplicationContext {
     private let theatreRepository: some TheatreRepository = InMemoryRepository.getInMemoryRepository()
     private let showRepository: some ShowRepository = InMemoryRepository.getInMemoryRepository()
     
-    private let customerFactory: CustomerFactory = .init()
-    private let adminFactory: AdminFactory = .init()
+    private let customerFactory = CustomerFactory()
+    private let adminFactory = AdminFactory()
     
-    private let sessionContext: SessionContext = .init()
+    private let sessionContext = SessionContext()
+    private let selectionContext = SelectionContext()
     
     private init() {
         userRepository.save(user: Admin(username: "superAdmin", password: "superAdmin@1234", superAdmin: true))
@@ -36,4 +37,6 @@ public final class ApplicationContext {
     public func getAdminFactory() -> AdminFactory { adminFactory }
     
     public func getSessionContext() -> SessionContext { sessionContext }
+    
+    public func getSelectionContext() -> SelectionContext { selectionContext }
 }

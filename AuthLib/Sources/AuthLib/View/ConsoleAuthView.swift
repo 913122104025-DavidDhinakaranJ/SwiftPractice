@@ -40,12 +40,12 @@ public class ConsoleAuthView {
     }
     
     public func changePassword(for user: AuthenticatableUser) {
-        let oldPassword = ConsoleAuthInputUtil.readPassword(prompt: "Enter your old password:")
+        let oldPassword = ConsoleAuthInputUtil.readPassword(prompt: "Enter your old password")
         var newPassword: String
         
         while true {
-            newPassword = ConsoleAuthInputUtil.readPassword(prompt: "Enter a new password:", isValidationEnabled: true)
-            let newPasswordConfirmation = ConsoleAuthInputUtil.readPassword(prompt: "Confirm your new password:")
+            newPassword = ConsoleAuthInputUtil.readPassword(prompt: "Enter a new password", isValidationEnabled: true)
+            let newPasswordConfirmation = ConsoleAuthInputUtil.readPassword(prompt: "Confirm your new password")
             
             if newPassword != newPasswordConfirmation {
                 print("New password and confirmation password do not match. Please try again.")

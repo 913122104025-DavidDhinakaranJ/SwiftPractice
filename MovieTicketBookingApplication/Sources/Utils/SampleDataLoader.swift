@@ -22,30 +22,45 @@ public struct SampleDataLoader {
     // MARK: - 1. Load Movies
     private func loadSampleMovies() {
         // Movie 1: Inception
-        let inception = Movie(
+        var inception = Movie(
             title: "Inception",
             durationInMinutes: 148,
             rating: .pg13,
             releaseDate: makeDate(year: 2010, month: 7, day: 16)
         )
+        inception.addGenre(Movie.Genre.sciFi)
+        inception.addGenre(Movie.Genre.action)
+        inception.addGenre(Movie.Genre.thriller)
+        inception.addLanguage(Movie.Language.english)
+        
         movieRepository.save(movie: inception)
         
         // Movie 2: Interstellar
-        let interstellar = Movie(
+        var interstellar = Movie(
             title: "Interstellar",
             durationInMinutes: 169,
             rating: .pg13,
             releaseDate: makeDate(year: 2014, month: 11, day: 7)
         )
+        interstellar.addGenre(Movie.Genre.sciFi)
+        interstellar.addGenre(Movie.Genre.drama)
+        interstellar.addGenre(Movie.Genre.adventure)
+        interstellar.addLanguage(Movie.Language.english)
+        
         movieRepository.save(movie: interstellar)
         
         // Movie 3: Vikram
-        let vikram = Movie(
+        var vikram = Movie(
             title: "Vikram",
             durationInMinutes: 175,
             rating: .adult,
             releaseDate: makeDate(year: 2022, month: 6, day: 3)
         )
+        vikram.addGenre(Movie.Genre.sciFi)
+        vikram.addGenre(Movie.Genre.thriller)
+        vikram.addGenre(Movie.Genre.mystery)
+        vikram.addLanguage(Movie.Language.tamil)
+        
         movieRepository.save(movie: vikram)
     }
     
