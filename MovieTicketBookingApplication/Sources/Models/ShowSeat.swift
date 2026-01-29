@@ -1,16 +1,14 @@
-public final class ShowSeat {
+public final class ShowSeat: Hashable {
     private enum Status {
         case available, booked
     }
     
-    public let showSeatId: String
     public let seat: Seat
-    public let show: Show
+    public unowned let show: Show
     private var status: Status = .available
     public var isAvailable: Bool { status == .available }
     
-    public init(showSeatId: String, seat: Seat, show: Show) {
-        self.showSeatId = showSeatId
+    public init(seat: Seat, show: Show) {
         self.seat = seat
         self.show = show
     }
@@ -21,5 +19,13 @@ public final class ShowSeat {
     
     public func unbook() {
         status = .available
+    }
+    
+    public static func == (lhs: ShowSeat, rhs: ShowSeat) -> Bool {
+        lhs === rhs
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        ObjectIdentifier(self).hash(into: &hasher)
     }
 }

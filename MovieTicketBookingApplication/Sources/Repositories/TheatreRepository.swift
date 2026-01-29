@@ -1,8 +1,10 @@
+import Errors
 import Models
 
 public protocol TheatreRepository {
-    func save(theatre: Theatre)
-    func remove(theatre: Theatre)
+    func add(theatre: Theatre) throws(RepoError)
+    func update(theatre: Theatre) throws(RepoError)
+    func remove(theatre: Theatre) throws(RepoError)
     
     func getAll() -> [Theatre]
 }

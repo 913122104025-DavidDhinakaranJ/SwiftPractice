@@ -14,7 +14,6 @@ public final class ApplicationContext {
     private let adminFactory = AdminFactory()
     
     private let sessionContext = SessionContext()
-    private let selectionContext = SelectionContext()
     
     private init() {
         userRepository.save(user: Admin(username: "superAdmin", password: "superAdmin@1234", superAdmin: true))
@@ -37,6 +36,4 @@ public final class ApplicationContext {
     public func getAdminFactory() -> AdminFactory { adminFactory }
     
     public func getSessionContext() -> SessionContext { sessionContext }
-    
-    public func getSelectionContext() -> SelectionContext { selectionContext }
 }

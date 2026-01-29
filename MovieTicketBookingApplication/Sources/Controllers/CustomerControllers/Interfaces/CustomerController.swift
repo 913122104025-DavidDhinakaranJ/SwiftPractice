@@ -1,5 +1,5 @@
 import Models
 
 public protocol CustomerController {
-    func getBookingHistory() -> [Booking]
+    func save(customer: Customer)
 }

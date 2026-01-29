@@ -1,7 +1,5 @@
-//
-//  ShowController.swift
-//  MovieTicketBookingApplication
-//
-//  Created by David Dhinakaran J on 27/01/26.
-//
+import Models
 
+public protocol ShowController {
+    func confirmBooking(booking: Booking)
+}

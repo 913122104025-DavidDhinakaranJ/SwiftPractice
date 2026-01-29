@@ -88,19 +88,29 @@ public struct ConsoleInputUtil {
     }
     
     public func readMenuOption<T : Collection>(prompt: String = "Enter Menu Choice", _ options: T) -> T.Element {
-        getSelection(prompt: prompt, from: options)!
+        displayOptions(options)
+        return getSelection(prompt: prompt, from: options)!
     }
     
-    public func readChoiceWithExit<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
-        getSelection(prompt: prompt, from: options, allowExit: true, stringify: stringify)
+    public func readChoice<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
+        displayOptions(options, allowExit: true, stringify: stringify)
+        return getSelection(prompt: prompt, from: options, allowExit: true)
     }
     
-    private func getSelection<T: Collection>(prompt: String, from options: T, allowExit: Bool = false, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
-        for (index, option) in options.enumerated() {
-            print("\(index + 1). \(stringify(option))")
-        }
-        if allowExit { print("0. Exit") }
+    public func readMultipleChoices<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> Set<T.Element> {
+        displayOptions(options, allowExit: true, stringify: stringify)
         
+        var choices: Set<T.Element> = []
+        while true {
+            if let choice = getSelection(prompt: prompt, from: options, allowExit: true) {
+                choices.insert(choice)
+            } else {
+                return choices
+            }
+        }
+    }
+    
+    private func getSelection<T: Collection>(prompt: String, from options: T, allowExit: Bool = false) -> T.Element? {
         while true {
             let choice = readInt(prompt: prompt)
             if allowExit && choice == 0 { return nil }
@@ -111,5 +121,10 @@ public struct ConsoleInputUtil {
         }
     }
     
-    
+    private func displayOptions<T: Collection>(_ options: T, allowExit: Bool = false, stringify: (T.Element) -> String = { "\($0)" }) {
+        for (index, option) in options.enumerated() {
+            print("\(index + 1). \(stringify(option))")
+        }
+        if allowExit { print("0. Exit") }
+    }
 }

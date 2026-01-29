@@ -1,8 +1,6 @@
 import Foundation
 
 public final class Show {
-    nonisolated(unsafe) private static var idCounter: Int = 0
-    
     public let showId: String
     public let movie: Movie
     public let theatre: Theatre
@@ -11,10 +9,11 @@ public final class Show {
     public private(set) var endTime: Date
     public private(set) var seats: [ShowSeat] = []
     public let price: Double
+    public var isShowStarted: Bool { startTime <= Date() }
+    public var isSeatsAvailable: Bool { seats.contains(where: { $0.isAvailable }) }
     
     public init(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, breakTime: Int, price: Double) {
-        Self.idCounter += 1
-        self.showId = "Show-\(Self.idCounter)"
+        self.showId = "Show-\(UUID().uuidString)"
         self.movie = movie
         self.theatre = theatre
         self.cinemaHall = cinemaHall
@@ -22,14 +21,14 @@ public final class Show {
         self.endTime = startTime.addingTimeInterval(TimeInterval(movie.durationInMinutes) + TimeInterval(breakTime))
         self.price = price
         
-        cinemaHall.seats.forEach { seat in
-            seats.append(ShowSeat(showSeatId: "\(showId)_\(seat.seatId)", seat: seat, show: self))
+        cinemaHall.seats.values.forEach { seat in
+            seats.append(ShowSeat(seat: seat, show: self))
         }
     }
     
     public func setTime(startTime: Date, breakTime: Int) {
         self.startTime = startTime
-        self.endTime = startTime.addingTimeInterval(TimeInterval(movie.durationInMinutes) + TimeInterval(breakTime))
+        self.endTime = startTime.addingTimeInterval(TimeInterval((movie.durationInMinutes + breakTime) * 60))
     }
     
     public func getAvailableSeats() -> [ShowSeat] {

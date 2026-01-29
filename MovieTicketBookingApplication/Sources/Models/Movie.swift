@@ -12,10 +12,7 @@ public struct Movie {
     public enum Rating: CaseIterable {
         case g, pg, pg13, adult
     }
-    
-    nonisolated(unsafe) private static var idCounter: Int = 0
-    
-    public let movieId: String
+        
     public let title: String
     public private(set) var genres: Set<Genre> = []
     public private(set) var languages: Set<Language> = []
@@ -24,8 +21,6 @@ public struct Movie {
     public private(set) var releaseDate: Date
     
     public init(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date) {
-        Self .idCounter += 1
-        self.movieId = "movie_\(Self.idCounter)"
         self.title = title
         self.durationInMinutes = durationInMinutes
         self.rating = rating

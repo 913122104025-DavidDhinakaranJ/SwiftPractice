@@ -19,14 +19,10 @@ struct ConsoleBrowseView {
             return
         }
         
-        let movie = inputReader.readChoiceWithExit(prompt: "Enter Movie Choice", movies) { $0.title }
+        let movie = inputReader.readChoice(prompt: "Enter Movie Choice", movies) { $0.title }
         if let movie {
-            appContext.getSelectionContext().select(movie)
-            
             var movieView = ConsoleMovieView(movieController: MovieControllerImpl(showRepository: appContext.getShowRepository()))
-            movieView.runMovieView()
-            
-            appContext.getSelectionContext().clearMovieSelection()
+            movieView.runMovieView(for: movie)
         }
     }
 }

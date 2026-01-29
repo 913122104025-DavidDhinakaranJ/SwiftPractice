@@ -17,8 +17,13 @@ struct ConsoleCustomerView {
     
     private let inputReader = ConsoleInputUtil()
     private let appContext = ApplicationContext.getApplicationContext()
+    private let customerController: CustomerController
     
     private var login = false
+    
+    init(customerController: CustomerController) {
+        self.customerController = customerController
+    }
     
     mutating func runCustomerView() {
         login = true
@@ -45,7 +50,21 @@ struct ConsoleCustomerView {
     }
     
     private func handleViewBookingHistory() {
-        print("View Booking History")
+        let customer = appContext.getSessionContext().currentUser as! Customer
+        let bookings = customer.bookings
+        if bookings.isEmpty {
+            print("No Booking History Found.")
+            return
+        }
+        
+        let booking = inputReader.readChoice(bookings) { booking in
+            "Date: \(booking.bookingDate), Movie: \(booking.show.movie.title), Theatre: \(booking.show.theatre.name), Status: \(booking.status)"
+        }
+        
+        if let booking {
+            var bookingView = ConsoleBookingView(bookingController: BookingControllerImpl(showRepository: appContext.getShowRepository()))
+            bookingView.runBookingView(for: booking)
+        }
     }
     
     private func handleChangePassword() {
@@ -55,6 +74,7 @@ struct ConsoleCustomerView {
     
     private mutating func handleLogout() {
         login = false
+        customerController.save(customer: appContext.getSessionContext().currentUser as! Customer)
         print("Logged out successfully.")
     }
 }

@@ -46,6 +46,7 @@ let package = Package(
             name: "Repositories",
             dependencies: [
                 "Models",
+                "Errors",
                 .product(name: "AuthLib", package: "AuthLib")
             ]
         ),

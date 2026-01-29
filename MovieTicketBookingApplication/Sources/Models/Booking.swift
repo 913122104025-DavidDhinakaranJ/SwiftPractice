@@ -1,27 +1,21 @@
 import Foundation
 
 public final class Booking {
-    private enum Status {
+    public enum Status {
         case pending, confirmed, cancelled
     }
-    
-    nonisolated(unsafe) private static var idCounter: Int = 0
-    
+        
     public let bookingId: String
     public let bookingDate: Date
-    private var status: Status = .pending
+    public private(set) var status: Status = .pending
     public unowned let customer: Customer
     public let show: Show
     public let seats: [ShowSeat]
     public let totalPrice: Double
     public let payment: Payment
     
-    public var isConfirmed: Bool { self.status == .confirmed }
-    public var isCancelled: Bool { self.status == .cancelled }
-    
     public init(customer: Customer, show: Show, seats: [ShowSeat]) {
-        Booking.idCounter += 1
-        self.bookingId = "B\(Booking.idCounter)"
+        self.bookingId = "BOOKING-\(UUID().uuidString)"
         self.bookingDate = Date()
         self.customer = customer
         self.show = show
@@ -37,13 +31,16 @@ public final class Booking {
     }
     
     public func confirm() {
+        guard status == .pending else { return }
         self.status = .confirmed
+        customer.addBooking(self)
         seats.forEach { showSeat in
             showSeat.book()
         }
     }
     
     public func cancel() {
+        guard status == .confirmed else { return }
         self.status = .cancelled
         seats.forEach { showSeat in
             showSeat.unbook()

@@ -1,13 +1,17 @@
+import Errors
+
 public struct CinemaHall {
-    private var seatIdCounter: Int = 0
+    public struct SeatKey: Hashable {
+        let row: String
+        let seatNumber: Int
+    }
+    
     private var nextRowIndex: Int = 0
     
-    public let hallId: String
     public let name: String
-    public private(set) var seats: [Seat] = []
+    public private(set) var seats: [SeatKey : Seat] = [:]
     
-    public init(hallId: String, name: String) {
-        self.hallId = hallId
+    public init(name: String) {
         self.name = name
     }
     
@@ -17,11 +21,15 @@ public struct CinemaHall {
             nextRowIndex += 1
             
             for seatNo in 1...numberOfSeatsPerRow {
-                seatIdCounter += 1
-                let seatId = "SEAT_\(hallId)_\(seatIdCounter)"
-                let seat = Seat(seatId: seatId, row: rowLabel, seatNumber: seatNo, type: type)
-                seats.append(seat)
+                let seat = Seat(row: rowLabel, seatNumber: seatNo, type: type)
+                seats[SeatKey(row: rowLabel, seatNumber: seatNo)] = seat
             }
+        }
+    }
+    
+    public mutating func removeSeat(at key: SeatKey) throws(TheatreError) {
+        if seats.removeValue(forKey: key) == nil {
+            throw TheatreError.seatNotFound
         }
     }
     

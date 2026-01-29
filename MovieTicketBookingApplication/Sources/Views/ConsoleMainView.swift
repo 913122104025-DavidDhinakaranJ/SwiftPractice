@@ -85,7 +85,7 @@ public struct ConsoleMainView {
         appContext.getSessionContext().login(user: user)
         switch user.role {
         case .customer:
-            var customerView = ConsoleCustomerView()
+            var customerView = ConsoleCustomerView(customerController: CustomerControllerImpl(userRepository: appContext.getUserRepository()))
             customerView.runCustomerView()
         case .admin:
             print("Admin View")

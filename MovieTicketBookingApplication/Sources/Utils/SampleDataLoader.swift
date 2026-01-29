@@ -33,7 +33,7 @@ public struct SampleDataLoader {
         inception.addGenre(Movie.Genre.thriller)
         inception.addLanguage(Movie.Language.english)
         
-        movieRepository.save(movie: inception)
+        try? movieRepository.add(movie: inception)
         
         // Movie 2: Interstellar
         var interstellar = Movie(
@@ -47,7 +47,7 @@ public struct SampleDataLoader {
         interstellar.addGenre(Movie.Genre.adventure)
         interstellar.addLanguage(Movie.Language.english)
         
-        movieRepository.save(movie: interstellar)
+        try? movieRepository.add(movie: interstellar)
         
         // Movie 3: Vikram
         var vikram = Movie(
@@ -61,7 +61,7 @@ public struct SampleDataLoader {
         vikram.addGenre(Movie.Genre.mystery)
         vikram.addLanguage(Movie.Language.tamil)
         
-        movieRepository.save(movie: vikram)
+        try? movieRepository.add(movie: vikram)
     }
     
     // MARK: - 2. Load Theatres
@@ -69,27 +69,29 @@ public struct SampleDataLoader {
         // Theatre 1: INOX
         var inox = Theatre(name: "INOX Marina Mall", address: "OMR, Chennai")
         
-        try! inox.addHall("Screen 1")
-        try! inox.addHall("Screen 2")
+        try? inox.addHall("Screen 1")
+        try? inox.addHall("Screen 2")
         
-        var screen1 = inox.halls[0]
+        var screen1 = inox.halls["Screen 1"]!
+        var screen2 = inox.halls["Screen 2"]!
+        
         screen1.addSeats(numberOfRows: 5, numberOfSeatsPerRow: 12, type: .regular)
         screen1.addSeats(numberOfRows: 2, numberOfSeatsPerRow: 10, type: .premium)
             
-        var screen2 = inox.halls[1]
         screen2.addSeats(numberOfRows: 4, numberOfSeatsPerRow: 10, type: .regular)
         
-        theatreRepository.save(theatre: inox)
+        try? theatreRepository.add(theatre: inox)
         
         // Theatre 2: PVR
         var pvr = Theatre(name: "PVR Phoenix Mall", address: "Velachery, Chennai")
-        try! pvr.addHall("Audi 1")
+        try? pvr.addHall("Audi 1")
         
-        var audi1 = pvr.halls[0]
+        var audi1 = pvr.halls["Audi 1"]!
+        
         audi1.addSeats(numberOfRows: 6, numberOfSeatsPerRow: 14, type: .regular)
         audi1.addSeats(numberOfRows: 2, numberOfSeatsPerRow: 12, type: .vip)
         
-        theatreRepository.save(theatre: pvr)
+        try? theatreRepository.add(theatre: pvr)
     }
     
     // MARK: - 3. Load Shows
@@ -102,7 +104,7 @@ public struct SampleDataLoader {
         let vikram = movies[2]
         
         let inox = theatres[0]
-        let inoxScreen1 = inox.halls[0]
+        let inoxScreen1 = inox.halls["screen 1"]!
         
         // Show 1: Inception Morning
         let show1 = Show(
@@ -113,7 +115,7 @@ public struct SampleDataLoader {
             breakTime: 15,
             price: 180.00
         )
-        showRepository.save(show: show1)
+        try? showRepository.add(show: show1)
         
         // Show 2: Interstellar Late Night
         let show2 = Show(
@@ -124,11 +126,11 @@ public struct SampleDataLoader {
             breakTime: 15,
             price: 220.00
         )
-        showRepository.save(show: show2)
+        try? showRepository.add(show: show2)
         
         // Show 3: Vikram Afternoon (Different Theatre)
         let pvr = theatres[1]
-        let pvrAudi1 = pvr.halls[0]
+        let pvrAudi1 = pvr.halls["Audi 1"]!
         
         let show3 = Show(
             movie: vikram,
@@ -138,7 +140,7 @@ public struct SampleDataLoader {
             breakTime: 20,
             price: 200.00
         )
-        showRepository.save(show: show3)
+        try? showRepository.add(show: show3)
     }
     
     // MARK: - Helper

@@ -42,7 +42,7 @@ struct ConsoleSearchView {
     }
     
     private func handleSearchByGenre() {
-        let genre = inputReader.readChoiceWithExit(prompt: "Enter Genre Choice", Movie.Genre.allCases)
+        let genre = inputReader.readChoice(prompt: "Enter Genre Choice", Movie.Genre.allCases)
         guard let genre else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .genre(genre)))
@@ -50,7 +50,7 @@ struct ConsoleSearchView {
     }
     
     private func handleSearchByLanguage() {
-        let language = inputReader.readChoiceWithExit(prompt: "Enter Language Choice", Movie.Language.allCases)
+        let language = inputReader.readChoice(prompt: "Enter Language Choice", Movie.Language.allCases)
         guard let language else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .language(language)))
@@ -58,7 +58,7 @@ struct ConsoleSearchView {
     }
     
     private func handleSearchByRating() {
-        let rating = inputReader.readChoiceWithExit(prompt: "Enter Rating Choice", Movie.Rating.allCases)
+        let rating = inputReader.readChoice(prompt: "Enter Rating Choice", Movie.Rating.allCases)
         guard let rating else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .rating(rating)))

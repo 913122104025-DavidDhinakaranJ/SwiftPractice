@@ -1,5 +1,6 @@
-import Models
 import AuthLib
+import Errors
+import Models
 
 public final class InMemoryRepository: UserRepository, MovieRepository, TheatreRepository, ShowRepository {
     nonisolated(unsafe) private static var shared: InMemoryRepository = .init()
@@ -35,12 +36,26 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
         users[username] != nil
     }
     
-    public func save(movie: Movie) {
-        movies.updateValue(movie, forKey: movie.movieId)
+    public func add(movie: Movie) throws(RepoError) {
+        guard !movies.keys.contains(movie.title) else {
+            throw RepoError.alreadyExists
+        }
+        movies.updateValue(movie, forKey: movie.title)
     }
     
-    public func delete(movie: Movie) {
-        movies.removeValue(forKey: movie.movieId)
+    public func update(movie: Movie) throws(RepoError) {
+        guard movies.keys.contains(movie.title) else {
+            throw RepoError.notFound
+        }
+        
+        movies.updateValue(movie, forKey: movie.title)
+    }
+    
+    public func delete(movie: Movie) throws(RepoError) {
+        guard movies.keys.contains(movie.title) else {
+            throw RepoError.notFound
+        }
+        movies.removeValue(forKey: movie.title)
     }
     
     public func isMovieExists(withTitle title: String) -> Bool {
@@ -67,23 +82,55 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
         movies.values.filter { $0.rating == rating }
     }
     
-    public func save(theatre: Theatre) {
-        theatres.updateValue(theatre, forKey: theatre.theatreId)
+    public func add(theatre: Theatre) throws(RepoError) {
+        guard !theatres.keys.contains(theatre.name) else {
+            throw RepoError.alreadyExists
+        }
+        
+        theatres.updateValue(theatre, forKey: theatre.name)
     }
     
-    public func remove(theatre: Theatre) {
-        theatres.removeValue(forKey: theatre.theatreId)
+    public func update(theatre: Theatre) throws(RepoError) {
+        guard theatres.keys.contains(theatre.name) else {
+            throw RepoError.notFound
+        }
+        
+        theatres.updateValue(theatre, forKey: theatre.name)
+    }
+    
+    public func remove(theatre: Theatre) throws(RepoError) {
+        guard theatres.keys.contains(theatre.name) else {
+            throw RepoError.notFound
+        }
+        
+        theatres.removeValue(forKey: theatre.name)
     }
     
     public func getAll() -> [Theatre] {
         theatres.values.sorted { $0.name < $1.name }
     }
     
-    public func save(show: Show) {
+    public func add(show: Show) throws(RepoError) {
+        guard !shows.keys.contains(show.showId) else {
+            throw RepoError.alreadyExists
+        }
+        
         shows.updateValue(show, forKey: show.showId)
     }
     
-    public func delete(show: Show) {
+    public func update(show: Show) throws(RepoError) {
+        guard shows.keys.contains(show.showId) else {
+            throw RepoError.notFound
+        }
+        
+        shows.updateValue(show, forKey: show.showId)
+    }
+    
+    public func delete(show: Show) throws(RepoError) {
+        guard shows.keys.contains(show.showId) else {
+            throw RepoError.notFound
+        }
+        
         shows.removeValue(forKey: show.showId)
     }
     
@@ -92,14 +139,14 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
     }
     
     public func getFutureShows(forMovie movie: Movie) -> [Show] {
-        shows.values.filter{ $0.movie.movieId == movie.movieId }.sorted { $0.startTime < $1.startTime }
+        shows.values.filter { $0.movie.title == movie.title }.sorted { $0.startTime < $1.startTime }
     }
     
     public func isShowConflict(_ show: Show) -> Bool {
         shows.values.contains {
             $0.showId != show.showId &&
-            $0.theatre.theatreId == show.theatre.theatreId &&
-            $0.cinemaHall.hallId == show.cinemaHall.hallId &&
+            $0.theatre.name == show.theatre.name &&
+            $0.cinemaHall.name == show.cinemaHall.name &&
             $0.startTime < show.endTime &&
             show.startTime < $0.endTime
         }

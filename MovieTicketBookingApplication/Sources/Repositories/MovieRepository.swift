@@ -1,8 +1,10 @@
+import Errors
 import Models
 
 public protocol MovieRepository {
-    func save(movie: Movie)
-    func delete(movie: Movie)
+    func add(movie: Movie) throws(RepoError)
+    func update(movie: Movie) throws(RepoError)
+    func delete(movie: Movie) throws(RepoError)
     
     func isMovieExists(withTitle title: String) -> Bool
     

@@ -7,8 +7,7 @@ public final class Admin: User {
     public private(set) var privileges: Set<Privilege> = []
     
     public init(username: String, password: String, superAdmin: Bool = false) {
-        Self .idCounter += 1
-        super.init(userId: "A\(Self.idCounter)", username: username, password: password, role: .admin)
+        super.init(username: username, password: password, role: .admin)
         superAdmin ? privileges.formUnion(Privilege.allCases) : ()
     }
     

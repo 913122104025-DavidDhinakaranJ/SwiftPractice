@@ -2,14 +2,12 @@ import AuthLib
 
 public class User: AuthenticatableUser {
     public enum Role { case customer, admin }
-    public let userId: String
     public let username: String
     private var password: String
     public let role: Role
     public private(set) var isBlocked: Bool = false
     
-    public init(userId: String, username: String, password: String, role: Role) {
-        self.userId = userId
+    public init(username: String, password: String, role: Role) {
         self.username = username
         self.password = password
         self.role = role
