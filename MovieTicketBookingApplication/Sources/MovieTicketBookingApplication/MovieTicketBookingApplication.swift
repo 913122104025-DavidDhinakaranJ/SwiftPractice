@@ -4,6 +4,6 @@ import Views
 struct MovieTicketBookingApplication {
     static func main() {
         var mainView = ConsoleMainView()
-        mainView.runMainView()
+        mainView.runView()
     }
 }

@@ -25,7 +25,7 @@ struct ConsoleCustomerView {
         self.customerController = customerController
     }
     
-    mutating func runCustomerView() {
+    mutating func runView() {
         login = true
         while login {
             let menuOption = inputReader.readMenuOption(MenuOption.allCases)
@@ -41,12 +41,12 @@ struct ConsoleCustomerView {
     
     private func handleSearchMovie() {
         var searchView = ConsoleSearchView()
-        searchView.runSearchView()
+        searchView.runView()
     }
     
     private func handleBrowseMovies() {
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .all))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private func handleViewBookingHistory() {
@@ -57,13 +57,13 @@ struct ConsoleCustomerView {
             return
         }
         
-        let booking = inputReader.readChoice(bookings) { booking in
+        let booking = inputReader.readChoiceWithExit(bookings) { booking in
             "Date: \(booking.bookingDate), Movie: \(booking.show.movie.title), Theatre: \(booking.show.theatre.name), Status: \(booking.status)"
         }
         
         if let booking {
             var bookingView = ConsoleBookingView(bookingController: BookingControllerImpl(showRepository: appContext.getShowRepository()))
-            bookingView.runBookingView(for: booking)
+            bookingView.runView(for: booking)
         }
     }
     

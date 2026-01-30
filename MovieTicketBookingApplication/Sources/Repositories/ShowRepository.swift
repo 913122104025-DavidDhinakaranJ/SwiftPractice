@@ -8,6 +8,4 @@ public protocol ShowRepository {
     
     func getAll() -> [Show]
     func getFutureShows(forMovie movie: Movie) -> [Show]
-    
-    func isShowConflict(_ show: Show) -> Bool
 }

@@ -22,7 +22,7 @@ struct ConsoleMovieView {
         self.movieController = movieController
     }
     
-    mutating func runMovieView(for movie: Movie) {
+    mutating func runView(for movie: Movie) {
         running = true
         while running {
             let movieOption = inputReader.readMenuOption(MenuOption.allCases)
@@ -50,13 +50,13 @@ struct ConsoleMovieView {
             return
         }
         
-        let show = inputReader.readChoice(shows) { show in
+        let show = inputReader.readChoiceWithExit(shows) { show in
             "Theatre: \(show.theatre.name)  |  CinemaHall: \(show.cinemaHall.name)  |  Time: \(show.startTime) to \(show.endTime)"
         }
         
         if let show {
             var showView = ConsoleShowView(showController: ShowControllerImpl(showRepository: appContext.getShowRepository()))
-            showView.runShowView(for: show)
+            showView.runView(for: show)
         }
     }
     

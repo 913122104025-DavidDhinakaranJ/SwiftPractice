@@ -2,155 +2,239 @@ import Foundation
 import Models
 import Repositories
 
-public struct SampleDataLoader {
-    private let movieRepository: MovieRepository
-    private let theatreRepository: TheatreRepository
-    private let showRepository: ShowRepository
-    
-    public init(movieRepository: any MovieRepository, theatreRepository: any TheatreRepository, showRepository: any ShowRepository) {
-        self.movieRepository = movieRepository
-        self.theatreRepository = theatreRepository
-        self.showRepository = showRepository
+public enum SampleDataLoader {
+
+    // MARK: - Entry Point
+    public static func loadData(
+        movieRepository: any MovieRepository,
+        theatreRepository: any TheatreRepository,
+        showRepository: any ShowRepository
+    ) {
+        loadSampleMovies(into: movieRepository)
+        loadTheatres(into: theatreRepository)
+        loadShows(
+            movieRepository: movieRepository,
+            theatreRepository: theatreRepository,
+            showRepository: showRepository
+        )
     }
-    
-    public func loadData() {
-        loadSampleMovies()
-        loadTheatres()
-        loadShows()
-    }
-    
+
     // MARK: - 1. Load Movies
-    private func loadSampleMovies() {
-        // Movie 1: Inception
+    private static func loadSampleMovies(
+        into movieRepository: any MovieRepository
+    ) {
+        // 1. Action / Sci-Fi
         var inception = Movie(
             title: "Inception",
             durationInMinutes: 148,
             rating: .pg13,
             releaseDate: makeDate(year: 2010, month: 7, day: 16)
         )
-        inception.addGenre(Movie.Genre.sciFi)
-        inception.addGenre(Movie.Genre.action)
-        inception.addGenre(Movie.Genre.thriller)
-        inception.addLanguage(Movie.Language.english)
-        
+        inception.addGenre(.action)
+        inception.addGenre(.sciFi)
+        inception.addGenre(.thriller)
+        inception.addLanguage(.english)
         try? movieRepository.add(movie: inception)
-        
-        // Movie 2: Interstellar
-        var interstellar = Movie(
-            title: "Interstellar",
-            durationInMinutes: 169,
+
+        // 2. Drama / Romance
+        var titanic = Movie(
+            title: "Titanic",
+            durationInMinutes: 195,
             rating: .pg13,
-            releaseDate: makeDate(year: 2014, month: 11, day: 7)
+            releaseDate: makeDate(year: 1997, month: 12, day: 19)
         )
-        interstellar.addGenre(Movie.Genre.sciFi)
-        interstellar.addGenre(Movie.Genre.drama)
-        interstellar.addGenre(Movie.Genre.adventure)
-        interstellar.addLanguage(Movie.Language.english)
-        
-        try? movieRepository.add(movie: interstellar)
-        
-        // Movie 3: Vikram
-        var vikram = Movie(
-            title: "Vikram",
-            durationInMinutes: 175,
-            rating: .adult,
-            releaseDate: makeDate(year: 2022, month: 6, day: 3)
+        titanic.addGenre(.drama)
+        titanic.addGenre(.romance)
+        titanic.addLanguage(.english)
+        try? movieRepository.add(movie: titanic)
+
+        // 3. Fantasy / Adventure
+        var lotr = Movie(
+            title: "The Lord of the Rings: The Fellowship of the Ring",
+            durationInMinutes: 178,
+            rating: .pg13,
+            releaseDate: makeDate(year: 2001, month: 12, day: 19)
         )
-        vikram.addGenre(Movie.Genre.sciFi)
-        vikram.addGenre(Movie.Genre.thriller)
-        vikram.addGenre(Movie.Genre.mystery)
-        vikram.addLanguage(Movie.Language.tamil)
-        
-        try? movieRepository.add(movie: vikram)
+        lotr.addGenre(.fantasy)
+        lotr.addGenre(.adventure)
+        lotr.addLanguage(.english)
+        try? movieRepository.add(movie: lotr)
+
+        // 4. Mystery / Drama (Japanese)
+        var rashomon = Movie(
+            title: "Rashomon",
+            durationInMinutes: 88,
+            rating: .pg,
+            releaseDate: makeDate(year: 1950, month: 8, day: 26)
+        )
+        rashomon.addGenre(.mystery)
+        rashomon.addGenre(.drama)
+        rashomon.addLanguage(.japanese)
+        try? movieRepository.add(movie: rashomon)
+
+        // 5. Comedy / Drama (Tamil)
+        var anbe = Movie(
+            title: "Anbe Sivam",
+            durationInMinutes: 160,
+            rating: .pg,
+            releaseDate: makeDate(year: 2003, month: 1, day: 14)
+        )
+        anbe.addGenre(.drama)
+        anbe.addGenre(.comedy)
+        anbe.addLanguage(.tamil)
+        try? movieRepository.add(movie: anbe)
     }
-    
+
     // MARK: - 2. Load Theatres
-    private func loadTheatres() {
-        // Theatre 1: INOX
-        var inox = Theatre(name: "INOX Marina Mall", address: "OMR, Chennai")
-        
-        try? inox.addHall("Screen 1")
-        try? inox.addHall("Screen 2")
-        
-        var screen1 = inox.halls["Screen 1"]!
-        var screen2 = inox.halls["Screen 2"]!
-        
-        screen1.addSeats(numberOfRows: 5, numberOfSeatsPerRow: 12, type: .regular)
-        screen1.addSeats(numberOfRows: 2, numberOfSeatsPerRow: 10, type: .premium)
-            
-        screen2.addSeats(numberOfRows: 4, numberOfSeatsPerRow: 10, type: .regular)
-        
-        try? theatreRepository.add(theatre: inox)
-        
-        // Theatre 2: PVR
-        var pvr = Theatre(name: "PVR Phoenix Mall", address: "Velachery, Chennai")
-        try? pvr.addHall("Audi 1")
-        
-        var audi1 = pvr.halls["Audi 1"]!
-        
-        audi1.addSeats(numberOfRows: 6, numberOfSeatsPerRow: 14, type: .regular)
-        audi1.addSeats(numberOfRows: 2, numberOfSeatsPerRow: 12, type: .vip)
-        
-        try? theatreRepository.add(theatre: pvr)
+    private static func loadTheatres(
+        into theatreRepository: any TheatreRepository
+    ) {
+        // =====================================================
+        // Theatre 1: Grand Cinema
+        // =====================================================
+        var grandCinema = Theatre(
+            name: "Grand Cinema",
+            address: "123 Main Road, Chennai"
+        )
+
+        try! grandCinema.addHall("Main Hall")
+        try! grandCinema.addSeatsToHall(
+            "Main Hall",
+            numberOfRows: 5,
+            numberOfSeatsPerRow: 12,
+            type: .regular
+        )
+        try! grandCinema.addSeatsToHall(
+            "Main Hall",
+            numberOfRows: 2,
+            numberOfSeatsPerRow: 10,
+            type: .premium
+        )
+
+        try! grandCinema.addHall("Premium Hall")
+        try! grandCinema.addSeatsToHall(
+            "Premium Hall",
+            numberOfRows: 4,
+            numberOfSeatsPerRow: 8,
+            type: .vip
+        )
+
+        try! grandCinema.addHall("Small Hall")
+        try! grandCinema.addSeatsToHall(
+            "Small Hall",
+            numberOfRows: 3,
+            numberOfSeatsPerRow: 6,
+            type: .regular
+        )
+
+        try! theatreRepository.add(theatre: grandCinema)
+
+        // =====================================================
+        // Theatre 2: City Multiplex
+        // =====================================================
+        var cityMultiplex = Theatre(
+            name: "City Multiplex",
+            address: "45 Lake View Street, Bengaluru"
+        )
+
+        try! cityMultiplex.addHall("Screen 1")
+        try! cityMultiplex.addSeatsToHall(
+            "Screen 1",
+            numberOfRows: 6,
+            numberOfSeatsPerRow: 14,
+            type: .regular
+        )
+
+        try! cityMultiplex.addHall("Screen 2")
+        try! cityMultiplex.addSeatsToHall(
+            "Screen 2",
+            numberOfRows: 4,
+            numberOfSeatsPerRow: 10,
+            type: .premium
+        )
+        try! cityMultiplex.addSeatsToHall(
+            "Screen 2",
+            numberOfRows: 1,
+            numberOfSeatsPerRow: 8,
+            type: .vip
+        )
+
+        try! cityMultiplex.addHall("Screen 3")
+        try! cityMultiplex.addSeatsToHall(
+            "Screen 3",
+            numberOfRows: 3,
+            numberOfSeatsPerRow: 8,
+            type: .regular
+        )
+
+        try! theatreRepository.add(theatre: cityMultiplex)
     }
-    
+
     // MARK: - 3. Load Shows
-    private func loadShows() {
-        let movies = movieRepository.getAllMovies()
+    private static func loadShows(
+        movieRepository: any MovieRepository,
+        theatreRepository: any TheatreRepository,
+        showRepository: any ShowRepository
+    ) {
+        let movies = movieRepository.getAll()
         let theatres = theatreRepository.getAll()
-        
-        let inception = movies[0]
-        let interstellar = movies[1]
-        let vikram = movies[2]
-        
-        let inox = theatres[0]
-        let inoxScreen1 = inox.halls["screen 1"]!
-        
-        // Show 1: Inception Morning
-        let show1 = Show(
+
+        let inception = movies.first { $0.title == "Inception" }!
+        let titanic = movies.first { $0.title == "Titanic" }!
+        let lotr = movies.first { $0.title.contains("Lord of the Rings") }!
+
+        let grandCinema = theatres.first { $0.name == "Grand Cinema" }!
+        let cityMultiplex = theatres.first { $0.name == "City Multiplex" }!
+
+        let mainHall = grandCinema["Main Hall"]!
+        let premiumHall = grandCinema["Premium Hall"]!
+        let screen2 = cityMultiplex["Screen 2"]!
+
+        let morningShow = Show(
             movie: inception,
-            theatre: inox,
-            cinemaHall: inoxScreen1,
-            startTime: makeDate(year: 2026, month: 1, day: 15, hour: 9, minute: 30),
+            theatre: grandCinema,
+            cinemaHall: mainHall,
+            startTime: makeDate(year: 2026, month: 2, day: 15, hour: 10),
             breakTime: 15,
-            price: 180.00
+            price: 180.0
         )
-        try? showRepository.add(show: show1)
-        
-        // Show 2: Interstellar Late Night
-        let show2 = Show(
-            movie: interstellar,
-            theatre: inox,
-            cinemaHall: inoxScreen1,
-            startTime: makeDate(year: 2026, month: 1, day: 15, hour: 22, minute: 00),
-            breakTime: 15,
-            price: 220.00
-        )
-        try? showRepository.add(show: show2)
-        
-        // Show 3: Vikram Afternoon (Different Theatre)
-        let pvr = theatres[1]
-        let pvrAudi1 = pvr.halls["Audi 1"]!
-        
-        let show3 = Show(
-            movie: vikram,
-            theatre: pvr,
-            cinemaHall: pvrAudi1,
-            startTime: makeDate(year: 2026, month: 1, day: 15, hour: 14, minute: 15),
+        try! showRepository.add(show: morningShow)
+
+        let eveningShow = Show(
+            movie: titanic,
+            theatre: grandCinema,
+            cinemaHall: premiumHall,
+            startTime: makeDate(year: 2026, month: 2, day: 15, hour: 18, minute: 30),
             breakTime: 20,
-            price: 200.00
+            price: 320.0
         )
-        try? showRepository.add(show: show3)
+        try! showRepository.add(show: eveningShow)
+
+        let lateNightShow = Show(
+            movie: lotr,
+            theatre: cityMultiplex,
+            cinemaHall: screen2,
+            startTime: makeDate(year: 2026, month: 2, day: 15, hour: 21, minute: 45),
+            breakTime: 15,
+            price: 350.0
+        )
+        try! showRepository.add(show: lateNightShow)
     }
-    
+
     // MARK: - Helper
-    private func makeDate(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0) -> Date {
+    private static func makeDate(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int = 0,
+        minute: Int = 0
+    ) -> Date {
         var components = DateComponents()
         components.year = year
         components.month = month
         components.day = day
         components.hour = hour
         components.minute = minute
-        return Calendar.current.date(from: components) ?? Date()
+        return Calendar.current.date(from: components)!
     }
 }

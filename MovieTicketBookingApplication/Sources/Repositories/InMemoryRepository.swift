@@ -62,7 +62,7 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
         movies.contains(where: { $0.value.title == title })
     }
     
-    public func getAllMovies() -> [Movie] {
+    public func getAll() -> [Movie] {
         movies.values.sorted { $0.title < $1.title }
     }
     
@@ -111,7 +111,7 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
     }
     
     public func add(show: Show) throws(RepoError) {
-        guard !shows.keys.contains(show.showId) else {
+        if isShowConflict(show) {
             throw RepoError.alreadyExists
         }
         
@@ -142,7 +142,7 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
         shows.values.filter { $0.movie.title == movie.title }.sorted { $0.startTime < $1.startTime }
     }
     
-    public func isShowConflict(_ show: Show) -> Bool {
+    private func isShowConflict(_ show: Show) -> Bool {
         shows.values.contains {
             $0.showId != show.showId &&
             $0.theatre.name == show.theatre.name &&

@@ -23,11 +23,15 @@ struct ConsoleBookingView {
         self.bookingController = bookingController
     }
     
-    mutating func runBookingView(for booking: Booking) {
+    mutating func runView(for booking: Booking) {
         running = true
         while running {
             let option = inputReader.readMenuOption(MenuOption.allCases)
-            
+            switch option {
+            case .viewBookingDetails: displayBookingDetails(for: booking)
+            case .cancelBooking: cancelBooking(for: booking)
+            case .exit: handleExit()
+            }
         }
     }
     
@@ -63,5 +67,9 @@ struct ConsoleBookingView {
                 print("The show has already started. Cannot cancel this booking.")
             }
         }
+    }
+    
+    private mutating func handleExit() {
+        running = false
     }
 }

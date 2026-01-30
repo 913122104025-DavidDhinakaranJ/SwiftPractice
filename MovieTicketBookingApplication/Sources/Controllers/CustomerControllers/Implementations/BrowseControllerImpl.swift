@@ -20,7 +20,7 @@ public struct BrowseControllerImpl: BrowseController {
     
     public func getMovies() -> [Movie] {
         return switch criteria {
-        case .all: movieRepository.getAllMovies()
+        case .all: movieRepository.getAll()
         case .title(let title): movieRepository.getMovies(title: title)
         case .genre(let genre): movieRepository.getMovies(genre: genre)
         case .language(let Language): movieRepository.getMovies(language: Language)

@@ -12,17 +12,17 @@ struct ConsoleBrowseView {
         self.browseController = browseController
     }
     
-    func runBrowseView() {
+    func runView() {
         let movies = browseController.getMovies()
         if movies.isEmpty {
             print("No movies available")
             return
         }
         
-        let movie = inputReader.readChoice(prompt: "Enter Movie Choice", movies) { $0.title }
+        let movie = inputReader.readChoiceWithExit(prompt: "Enter Movie Choice", movies) { $0.title }
         if let movie {
             var movieView = ConsoleMovieView(movieController: MovieControllerImpl(showRepository: appContext.getShowRepository()))
-            movieView.runMovieView(for: movie)
+            movieView.runView(for: movie)
         }
     }
 }

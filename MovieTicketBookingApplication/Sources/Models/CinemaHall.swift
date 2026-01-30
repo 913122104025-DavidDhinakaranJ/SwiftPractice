@@ -1,7 +1,7 @@
 import Errors
 
 public struct CinemaHall {
-    public struct SeatKey: Hashable {
+    private struct SeatKey: Hashable {
         let row: String
         let seatNumber: Int
     }
@@ -9,13 +9,13 @@ public struct CinemaHall {
     private var nextRowIndex: Int = 0
     
     public let name: String
-    public private(set) var seats: [SeatKey : Seat] = [:]
+    private var seats: [SeatKey : Seat] = [:]
     
-    public init(name: String) {
+    init(name: String) {
         self.name = name
     }
     
-    public mutating func addSeats(numberOfRows: Int, numberOfSeatsPerRow: Int, type: Seat.SeatType) {
+    mutating func addSeats(numberOfRows: Int, numberOfSeatsPerRow: Int, type: Seat.SeatType) {
         for _ in 0..<numberOfRows {
             let rowLabel = Self.getRowName(nextRowIndex)
             nextRowIndex += 1
@@ -27,10 +27,24 @@ public struct CinemaHall {
         }
     }
     
-    public mutating func removeSeat(at key: SeatKey) throws(TheatreError) {
-        if seats.removeValue(forKey: key) == nil {
-            throw TheatreError.seatNotFound
+    public func getSeats() -> [Seat] {
+        seats.values.sorted { seat1, seat2 in
+            if seat1.row != seat2.row {
+                return seat1.row < seat2.row
+            }
+            return seat1.seatNumber < seat2.seatNumber
         }
+    }
+    
+    mutating func changeSeatType(row: String, seatNumber: Int, to newType: Seat.SeatType) throws(TheatreError) {
+        let key = SeatKey(row: row, seatNumber: seatNumber)
+        guard seats[key] != nil else { throw TheatreError.seatNotFound }
+        seats[key]!.changeSeatType(newType)
+    }
+    
+    mutating func removeSeat(row: String, seatNumber: Int) throws(TheatreError) {
+        let key = SeatKey(row: row, seatNumber: seatNumber)
+        if seats.removeValue(forKey: key) == nil { throw TheatreError.seatNotFound }
     }
     
     private static func getRowName(_ index: Int) -> String {
@@ -51,5 +65,10 @@ public struct CinemaHall {
         }
         
         return rowName
+    }
+    
+    public subscript(row: String, seatNumber: Int) -> Seat? {
+        let key = SeatKey(row: row, seatNumber: seatNumber)
+        return seats[key]
     }
 }

@@ -7,13 +7,13 @@ public struct Seat {
     public let seatNumber: Int
     public private(set) var type: SeatType
     
-    public init(row: String, seatNumber: Int, type: SeatType) {
+    init(row: String, seatNumber: Int, type: SeatType) {
         self.row = row
         self.seatNumber = seatNumber
         self.type = type
     }
     
-    public mutating func changeSeatType(_ type: SeatType) {
+    mutating func changeSeatType(_ type: SeatType) {
         self.type = type
     }
 }

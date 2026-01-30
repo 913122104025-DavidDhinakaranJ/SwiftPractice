@@ -65,6 +65,16 @@ public struct ConsoleInputUtil {
         }
     }
     
+    public func readFutureDateTime(prompt: String) -> Date {
+        while true {
+            let futureTime = readDateTime(prompt: prompt)
+            if futureTime > Date() {
+                return futureTime
+            }
+            print("Time must be in the future.")
+        }
+    }
+    
     public func readAmount(prompt: String) -> Double {
         while true {
             print(prompt, terminator: ": ")
@@ -92,17 +102,23 @@ public struct ConsoleInputUtil {
         return getSelection(prompt: prompt, from: options)!
     }
     
-    public func readChoice<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
+    public func readChoiceWithExit<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
         displayOptions(options, allowExit: true, stringify: stringify)
         return getSelection(prompt: prompt, from: options, allowExit: true)
     }
     
-    public func readMultipleChoices<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> Set<T.Element> {
+    public func readChoice<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element {
+        displayOptions(options, stringify: stringify)
+        return getSelection(prompt: prompt, from: options)!
+    }
+    
+    public func readMultipleChoices<T: Collection>(mainPrompt: String, subPrompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> Set<T.Element> {
         displayOptions(options, allowExit: true, stringify: stringify)
+        print(mainPrompt, terminator: ": \n")
         
         var choices: Set<T.Element> = []
         while true {
-            if let choice = getSelection(prompt: prompt, from: options, allowExit: true) {
+            if let choice = getSelection(prompt: subPrompt, from: options, allowExit: true) {
                 choices.insert(choice)
             } else {
                 return choices

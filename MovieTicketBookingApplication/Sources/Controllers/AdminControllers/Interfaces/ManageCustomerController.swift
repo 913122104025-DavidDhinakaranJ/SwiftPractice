@@ -1,7 +1,6 @@
-//
-//  ManageCustomerController.swift
-//  MovieTicketBookingApplication
-//
-//  Created by David Dhinakaran J on 27/01/26.
-//
+import Models
 
+public protocol ManageCustomerController {
+    func getAllCustomers() -> [Customer]
+    func updateCustomer(_ customer: Customer)
+}

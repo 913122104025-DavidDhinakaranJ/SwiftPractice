@@ -23,10 +23,15 @@ struct ConsoleShowView {
         self.showController = showController
     }
     
-    public mutating func runShowView(for show: Show) {
+    public mutating func runView(for show: Show) {
         running = true
         while running {
             let option = inputReader.readMenuOption(MenuOption.allCases)
+            switch option {
+            case .viewDetails: showDetails(for: show)
+            case .BookTickets: handleBookTickets(for: show)
+            case .exit: running = false
+            }
         }
     }
     
@@ -36,10 +41,12 @@ struct ConsoleShowView {
         print("Cinema Hall: \(show.cinemaHall.name)")
         print("Timing: \(show.startTime) to \(show.endTime)")
         print("Base Price: \(show.price)")
-        print("Available Seats:")
-        show.getAvailableSeats().forEach { showSeat in
-            let seat = showSeat.seat
-            print("\(seat.row)\(seat.seatNumber) - \(seat.type)")
+        if show.isSeatsAvailable {
+            print("Available Seats:")
+            show.getAvailableSeats().forEach { showSeat in
+                let seat = showSeat.seat
+                print("\(seat.row)\(seat.seatNumber) - \(seat.type)")
+            }
         }
     }
     
@@ -56,9 +63,22 @@ struct ConsoleShowView {
         
         guard let customer = appContext.getSessionContext().currentUser as! Customer? ?? handleGuestUser() else { return }
         
-        let selectedSeats = inputReader.readMultipleChoices(show.getAvailableSeats())
+        let selectedSeats = inputReader.readMultipleChoices(mainPrompt: "Select Seats to Book", show.getAvailableSeats()) { showSeat in
+            let seat = showSeat.seat
+            return "\(seat.row)\(seat.seatNumber) - \(seat.type)"
+        }
+        .sorted { showSeat1, showSeat2 in
+            let seat1 = showSeat1.seat
+            let seat2 = showSeat2.seat
+            if seat1.row != seat2.row {
+                return seat1.row < seat2.row
+            }
+            return seat1.seatNumber < seat2.seatNumber
+        }
         
-        var booking = Booking(customer: customer, show: show, seats: Array(selectedSeats))
+        if selectedSeats.isEmpty { return }
+        
+        let booking = Booking(customer: customer, show: show, seats: selectedSeats)
         var paymentView = ConsolePaymentView(payment: booking.payment)
         
         if paymentView.handlePayment(amount: booking.totalPrice) {

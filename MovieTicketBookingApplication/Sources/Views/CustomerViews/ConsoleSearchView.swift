@@ -19,7 +19,7 @@ struct ConsoleSearchView {
     
     private var searching: Bool = false
     
-    mutating func runSearchView() {
+    mutating func runView() {
         searching = true
         while searching {
             let searchOption = inputReader.readMenuOption(SearchOption.allCases)
@@ -38,31 +38,31 @@ struct ConsoleSearchView {
         if(title.isEmpty) { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .title(title)))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private func handleSearchByGenre() {
-        let genre = inputReader.readChoice(prompt: "Enter Genre Choice", Movie.Genre.allCases)
+        let genre = inputReader.readChoiceWithExit(prompt: "Enter Genre Choice", Movie.Genre.allCases)
         guard let genre else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .genre(genre)))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private func handleSearchByLanguage() {
-        let language = inputReader.readChoice(prompt: "Enter Language Choice", Movie.Language.allCases)
+        let language = inputReader.readChoiceWithExit(prompt: "Enter Language Choice", Movie.Language.allCases)
         guard let language else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .language(language)))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private func handleSearchByRating() {
-        let rating = inputReader.readChoice(prompt: "Enter Rating Choice", Movie.Rating.allCases)
+        let rating = inputReader.readChoiceWithExit(prompt: "Enter Rating Choice", Movie.Rating.allCases)
         guard let rating else { return }
         
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .rating(rating)))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private mutating func handleBack() {

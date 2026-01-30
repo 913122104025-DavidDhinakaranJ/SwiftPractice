@@ -17,8 +17,7 @@ public final class ApplicationContext {
     
     private init() {
         userRepository.save(user: Admin(username: "superAdmin", password: "superAdmin@1234", superAdmin: true))
-        let dataLoader = SampleDataLoader(movieRepository: movieRepository, theatreRepository: theatreRepository, showRepository: showRepository)
-        dataLoader.loadData()
+        SampleDataLoader.loadData(movieRepository: movieRepository, theatreRepository: theatreRepository, showRepository: showRepository)
     }
     
     public static func getApplicationContext() -> ApplicationContext { shared }

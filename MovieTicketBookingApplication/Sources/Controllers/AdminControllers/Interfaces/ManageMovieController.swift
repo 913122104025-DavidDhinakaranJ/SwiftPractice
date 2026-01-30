@@ -1,7 +1,9 @@
-//
-//  ManageMovieController.swift
-//  MovieTicketBookingApplication
-//
-//  Created by David Dhinakaran J on 27/01/26.
-//
+import Errors
+import Models
 
+public protocol ManageMovieController {
+    func getAllMovies() -> [Movie]
+    func add(movie: Movie) throws(RepoError)
+    func update(movie: Movie) throws(RepoError)
+    func remove(movie: Movie) throws(RepoError)
+}

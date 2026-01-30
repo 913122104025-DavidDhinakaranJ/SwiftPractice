@@ -22,7 +22,7 @@ public struct ConsoleMainView {
     
     public init() {}
     
-    public mutating func runMainView() {
+    public mutating func runView() {
         running = true
         
         while running {
@@ -68,12 +68,12 @@ public struct ConsoleMainView {
     
     private func handleSearchMovie() {
         var searchView = ConsoleSearchView()
-        searchView.runSearchView()
+        searchView.runView()
     }
         
     private func handleBrowseMovies() {
         let browseView = ConsoleBrowseView(browseController: BrowseControllerImpl(movieRepository: appContext.getMovieRepository(), criteria: .all))
-        browseView.runBrowseView()
+        browseView.runView()
     }
     
     private mutating func handleExit() {
@@ -86,9 +86,10 @@ public struct ConsoleMainView {
         switch user.role {
         case .customer:
             var customerView = ConsoleCustomerView(customerController: CustomerControllerImpl(userRepository: appContext.getUserRepository()))
-            customerView.runCustomerView()
+            customerView.runView()
         case .admin:
-            print("Admin View")
+            var adminView = ConsoleAdminView()
+            adminView.runView()
         }
         appContext.getSessionContext().logout()
     }

@@ -5,6 +5,7 @@ public class ConsoleAuthView {
         self.authController = authController
     }
     
+    @discardableResult 
     public func handleRegistration() -> (any AuthenticatableUser)? {
         let username = ConsoleAuthInputUtil.readUserName(isValidationEnabled: true)
         let password = ConsoleAuthInputUtil.readPassword(isValidationEnabled: true)

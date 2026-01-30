@@ -18,10 +18,10 @@ public final class Show {
         self.theatre = theatre
         self.cinemaHall = cinemaHall
         self.startTime = startTime
-        self.endTime = startTime.addingTimeInterval(TimeInterval(movie.durationInMinutes) + TimeInterval(breakTime))
+        self.endTime = startTime.addingTimeInterval(TimeInterval((movie.durationInMinutes + breakTime) * 60))
         self.price = price
         
-        cinemaHall.seats.values.forEach { seat in
+        cinemaHall.getSeats().forEach { seat in
             seats.append(ShowSeat(seat: seat, show: self))
         }
     }
