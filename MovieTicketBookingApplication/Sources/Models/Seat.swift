@@ -1,5 +1,5 @@
 public struct Seat {
-    public enum SeatType: Double {
+    public enum SeatType: Double, CaseIterable {
         case regular = 1, premium = 1.50, vip = 2
     }
     

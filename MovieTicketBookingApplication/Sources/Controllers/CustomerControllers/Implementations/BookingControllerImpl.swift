@@ -9,13 +9,13 @@ public struct BookingControllerImpl: BookingController {
         self.showRepository = showRepository
     }
     
-    public func cancelBooking(_ booking: Booking) throws(BookingCancellationError) -> Double {
+    public func cancelBooking(_ booking: Booking) throws(BookingError) -> Double {
         if booking.status == .cancelled {
-            throw BookingCancellationError.alreadyCancelled
+            throw BookingError.alreadyCancelled
         }
         
         if booking.show.isShowStarted {
-            throw BookingCancellationError.showStarted
+            throw BookingError.showStarted
         }
         
         booking.cancel()

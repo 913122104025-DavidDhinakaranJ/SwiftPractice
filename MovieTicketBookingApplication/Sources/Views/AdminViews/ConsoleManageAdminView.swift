@@ -27,9 +27,10 @@ struct ConsoleManageAdminView {
     }
     
     mutating func runView() {
+        let options: [AdminManageOption] = [.addAdmin, .viewAdmins, .back]
         running = true
+        
         while running {
-            let options: [AdminManageOption] = [.addAdmin, .viewAdmins, .back]
             let selectedOption: AdminManageOption = inputReader.readMenuOption(options)
             
             switch selectedOption {
@@ -47,15 +48,11 @@ struct ConsoleManageAdminView {
     }
     
     private func handleViewAdmins() {
-        var selectedAdmin: Admin? = inputReader.readChoiceWithExit(manageAdminController.getAllAdmins()) { admin in
-            "\(admin.username) (Blocked: \(admin.isBlocked ? "Yes" : "No"))"
-        }
-        
-        if let selectedAdmin = selectedAdmin {
-            displayAdminDetails(selectedAdmin)
-        }
+        var selectedAdmin: Admin? = inputReader.readChoiceWithExit(manageAdminController.getAllAdmins())
         
         while let currentAdmin = selectedAdmin {
+            print(currentAdmin.detailedDescription)
+            
             let options: [AdminManageOption] = [.managePrivileges, (currentAdmin.isBlocked ? .unblockAdmin : .blockAdmin), .back]
             let selectedSubOption: AdminManageOption = inputReader.readMenuOption(options)
             
@@ -97,15 +94,5 @@ struct ConsoleManageAdminView {
     
     private mutating func handleBack() {
         running = false
-    }
-    
-    private func displayAdminDetails(_ admin: Admin) {
-        print("Username: \(admin.username)")
-        print("Status: \(admin.isBlocked ? "Blocked" : "Active")")
-        print("Privileges: ")
-        Admin.Privilege.allCases.forEach { privilege in
-            let isEnabled = admin.privileges.contains(privilege)
-            print("\(isEnabled ? "✅" : "❌") \(privilege)")
-        }
     }
 }

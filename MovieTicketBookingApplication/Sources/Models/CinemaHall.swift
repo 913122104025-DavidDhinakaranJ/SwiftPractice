@@ -38,13 +38,13 @@ public struct CinemaHall {
     
     mutating func changeSeatType(row: String, seatNumber: Int, to newType: Seat.SeatType) throws(TheatreError) {
         let key = SeatKey(row: row, seatNumber: seatNumber)
-        guard seats[key] != nil else { throw TheatreError.seatNotFound }
+        guard seats[key] != nil else { throw TheatreError.seatNotFound(row: row, seatNumber: seatNumber) }
         seats[key]!.changeSeatType(newType)
     }
     
     mutating func removeSeat(row: String, seatNumber: Int) throws(TheatreError) {
         let key = SeatKey(row: row, seatNumber: seatNumber)
-        if seats.removeValue(forKey: key) == nil { throw TheatreError.seatNotFound }
+        if seats.removeValue(forKey: key) == nil { throw TheatreError.seatNotFound(row: row, seatNumber: seatNumber) }
     }
     
     private static func getRowName(_ index: Int) -> String {

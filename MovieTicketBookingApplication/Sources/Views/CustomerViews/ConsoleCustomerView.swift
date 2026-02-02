@@ -57,9 +57,7 @@ struct ConsoleCustomerView {
             return
         }
         
-        let booking = inputReader.readChoiceWithExit(bookings) { booking in
-            "Date: \(booking.bookingDate), Movie: \(booking.show.movie.title), Theatre: \(booking.show.theatre.name), Status: \(booking.status)"
-        }
+        let booking = inputReader.readChoiceWithExit(bookings)
         
         if let booking {
             var bookingView = ConsoleBookingView(bookingController: BookingControllerImpl(showRepository: appContext.getShowRepository()))

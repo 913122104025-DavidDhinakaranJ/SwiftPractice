@@ -27,20 +27,11 @@ struct ConsoleMovieView {
         while running {
             let movieOption = inputReader.readMenuOption(MenuOption.allCases)
             switch movieOption {
-            case .viewDetails: displayMovieDetails(for: movie)
+            case .viewDetails: print(movie.detailedDescription)
             case .viewShows: handleViewShows(for: movie)
             case .exit: handleExit()
             }
         }
-    }
-    
-    private func displayMovieDetails(for movie: Movie) {
-        print("Title: \(movie.title)")
-        print("Genres: \(movie.genres.map { "\($0)".capitalized }.joined(separator: ", "))")
-        print("Languages: \(movie.languages.map { "\($0)".capitalized }.joined(separator: ", "))")
-        print("Duration: \(movie.durationInMinutes) Minutes")
-        print("Rating: \("\(movie.rating)".capitalized)")
-        print("Release Date: \(movie.releaseDate)")
     }
     
     private func handleViewShows(for movie: Movie) {
@@ -50,9 +41,7 @@ struct ConsoleMovieView {
             return
         }
         
-        let show = inputReader.readChoiceWithExit(shows) { show in
-            "Theatre: \(show.theatre.name)  |  CinemaHall: \(show.cinemaHall.name)  |  Time: \(show.startTime) to \(show.endTime)"
-        }
+        let show = inputReader.readChoiceWithExit(shows)
         
         if let show {
             var showView = ConsoleShowView(showController: ShowControllerImpl(showRepository: appContext.getShowRepository()))

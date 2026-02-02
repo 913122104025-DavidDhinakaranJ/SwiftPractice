@@ -1,4 +1,5 @@
 import Foundation
+import Errors
 
 public final class Booking {
     public enum Status {
@@ -14,7 +15,9 @@ public final class Booking {
     public let totalPrice: Double
     public let payment: Payment
     
-    public init(customer: Customer, show: Show, seats: [ShowSeat]) {
+    public init(customer: Customer, show: Show, seats: [ShowSeat]) throws(BookingError) {
+        guard !customer.isBlocked else { throw BookingError.blockedCustomer }
+        
         self.bookingId = "BOOKING-\(UUID().uuidString)"
         self.bookingDate = Date()
         self.customer = customer

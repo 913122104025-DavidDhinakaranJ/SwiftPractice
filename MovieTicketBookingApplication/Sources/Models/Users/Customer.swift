@@ -1,5 +1,4 @@
 public final class Customer: User {
-    nonisolated(unsafe) private static var idCounter: Int = 1000
     public private(set) var bookings: [Booking] = []
     
     public init(username: String, password: String) {

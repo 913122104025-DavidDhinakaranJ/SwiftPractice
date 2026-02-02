@@ -3,11 +3,14 @@ public final class Admin: User {
         case theatre, show, movie, customer, admin
     }
     
-    nonisolated(unsafe) private static var idCounter: Int = 1000
     public private(set) var privileges: Set<Privilege> = []
     
-    public init(username: String, password: String, superAdmin: Bool = false) {
+    public init(username: String, password: String) {
         super.init(username: username, password: password, role: .admin)
+    }
+    
+    public convenience init(username: String, password: String, superAdmin: Bool) {
+        self.init(username: username, password: password)
         superAdmin ? privileges.formUnion(Privilege.allCases) : ()
     }
     

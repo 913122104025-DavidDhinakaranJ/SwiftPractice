@@ -23,11 +23,23 @@ struct ConsoleManageCustomerView {
     mutating func runView() {
         running = true
         while running {
-            var selectedCustomer: Customer? = inputReader.readChoiceWithExit(manageCustomerController.getAllCustomers()) { customer in
-                "\(customer.username) (Blocked: \(customer.isBlocked ? "Yes" : "No"))"
+            let customers = manageCustomerController.getAllCustomers()
+            
+            guard !customers.isEmpty else {
+                print("No customers to manage.")
+                running = false
+                continue
+            }
+            
+            var selectedCustomer: Customer? = inputReader.readChoiceWithExit(manageCustomerController.getAllCustomers())
+            
+            if selectedCustomer == nil {
+                running = false
             }
             
             while let currentCustomer = selectedCustomer {
+                print(currentCustomer.detailedDescription)
+                
                 let options: [CustomerManageOption] = [(currentCustomer.isBlocked ? .unblockCustomer : .blockCustomer), .back]
                 let selectedSubOption: CustomerManageOption = inputReader.readMenuOption(options)
                 
@@ -48,10 +60,6 @@ struct ConsoleManageCustomerView {
     
     private func handleUnblockCustomer(_ customer: Customer) {
         customer.unblock()
-    }
-    
-    private mutating func handleBack() {
-        running = false
     }
 }
 

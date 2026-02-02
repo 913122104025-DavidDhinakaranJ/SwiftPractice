@@ -25,15 +25,15 @@ public struct ManageShowControllerImpl: ManageShowController {
         theatreRepository.getAll()
     }
     
-    public func addShow(show: Show) throws(RepoError) {
+    public func addShow(_ show: Show) throws(RepoError) {
         try showRepository.add(show: show)
     }
     
-    public func updateShow(show: Show) throws(RepoError) {
+    public func updateShow(_ show: Show) throws(RepoError) {
         try showRepository.update(show: show)
     }
     
-    public func removeShow(show: Show) throws(RepoError) {
+    public func removeShow(_ show: Show) throws(RepoError) {
         try showRepository.delete(show: show)
     }
 }

@@ -1,5 +1,5 @@
 public enum TheatreError: Error {
-    case cinemaHallAlreadyExists
-    case cinemaHallNotFound
-    case seatNotFound
+    case cinemaHallAlreadyExists(name: String)
+    case cinemaHallNotFound(name: String)
+    case seatNotFound(row: String, seatNumber: Int)
 }

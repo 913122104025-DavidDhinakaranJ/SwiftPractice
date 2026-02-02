@@ -28,28 +28,11 @@ struct ConsoleBookingView {
         while running {
             let option = inputReader.readMenuOption(MenuOption.allCases)
             switch option {
-            case .viewBookingDetails: displayBookingDetails(for: booking)
+            case .viewBookingDetails: print(booking.detailedDescription)
             case .cancelBooking: cancelBooking(for: booking)
             case .exit: handleExit()
             }
         }
-    }
-    
-    private func displayBookingDetails(for booking: Booking) {
-        let seatDescriptions = booking.seats.map { showSeat in
-            let seat = showSeat.seat
-            return "\(seat.row)\(seat.seatNumber) - \(seat.type)"
-        }
-
-        let show = booking.show
-
-        print("Date: \(booking.bookingDate)")
-        print("Movie: \(show.movie.title)")
-        print("Theatre: \(show.theatre.name)")
-        print("Cinema Hall: \(show.cinemaHall.name)")
-        print("Seats: \(seatDescriptions.joined(separator: ", "))")
-        print("Status: \(booking.status)")
-        print("Total Price: \(booking.totalPrice)")
     }
     
     private func cancelBooking(for booking: Booking) {

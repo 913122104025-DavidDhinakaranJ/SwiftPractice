@@ -3,12 +3,12 @@ import Models
 import Utils
 
 public final class ApplicationContext {
-    nonisolated(unsafe) private static let shared: ApplicationContext = .init()
+    nonisolated(unsafe) private static let shared = ApplicationContext()
     
-    private let userRepository: some UserRepository = InMemoryRepository.getInMemoryRepository()
-    private let movieRepository: some MovieRepository = InMemoryRepository.getInMemoryRepository()
-    private let theatreRepository: some TheatreRepository = InMemoryRepository.getInMemoryRepository()
-    private let showRepository: some ShowRepository = InMemoryRepository.getInMemoryRepository()
+    private let userRepository: some UserRepository = InMemoryRepository.shared
+    private let movieRepository: some MovieRepository = InMemoryRepository.shared
+    private let theatreRepository: some TheatreRepository = InMemoryRepository.shared
+    private let showRepository: some ShowRepository = InMemoryRepository.shared
     
     private let customerFactory = CustomerFactory()
     private let adminFactory = AdminFactory()

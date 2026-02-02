@@ -34,9 +34,10 @@ struct ConsoleManageMovieView {
     }
     
     mutating func runView() {
+        let options: [MovieManageOption] = [.addMovie, .viewMovies, .exit]
         running = true
+        
         while running {
-            let options: [MovieManageOption] = [.addMovie, .viewMovies, .exit]
             let selectedOption = inputReader.readMenuOption(options)
             
             switch selectedOption {
@@ -54,7 +55,7 @@ struct ConsoleManageMovieView {
         let languages = inputReader.readMultipleChoices(mainPrompt: "Select languages for the movie", Movie.Language.allCases)
         let rating = inputReader.readChoice(prompt: "Enter Rating Choice: ", Movie.Rating.allCases)
         let duration = inputReader.readPositiveInt(prompt: "Enter movie duration in minutes")
-        let releaseDate = inputReader.readDate(prompt: "Enter release date (yyyy-MM-dd)")
+        let releaseDate = inputReader.readDate(prompt: "Enter release date")
         
         var movie = Movie(title: title, durationInMinutes: duration, rating: rating, releaseDate: releaseDate)
         genres.forEach { movie.addGenre($0) }
@@ -62,6 +63,7 @@ struct ConsoleManageMovieView {
         
         do {
             try manageMovieController.add(movie: movie)
+            print("Movie added successfully.")
         } catch RepoError.alreadyExists {
             print("A movie with the title '\(title)' already exists.")
         } catch {
@@ -71,28 +73,19 @@ struct ConsoleManageMovieView {
     
     private func handleViewMovies() {
         let options: [MovieManageOption] = [.updateMovie, .deleteMovie, .exit]
-        var selectedMovie = inputReader.readChoiceWithExit(manageMovieController.getAllMovies()) { movie in movie.title }
+        var selectedMovie = inputReader.readChoiceWithExit(manageMovieController.getAllMovies())
         
         while let currentMovie = selectedMovie {
-            displayMovieDetails(currentMovie)
+            print(currentMovie.detailedDescription)
             let selectedSubOption = inputReader.readMenuOption(options)
             
             selectedMovie = switch selectedSubOption {
             case .updateMovie: handleUpdateMovie(currentMovie)
-            case .deleteMovie: handleDeleteMovie(currentMovie)
+            case .deleteMovie: handleDeleteMovie(currentMovie) ? nil : currentMovie
             case .exit: nil
             default: fatalError("Unhandled case")
             }
         }
-    }
-    
-    private func displayMovieDetails(_ movie: Movie) {
-        print("Title: \(movie.title)")
-        print("Genres: \(movie.genres.map { "\($0)".capitalized }.joined(separator: ", "))")
-        print("Languages: \(movie.languages.map { "\($0)".capitalized }.joined(separator: ", "))")
-        print("Duration: \(movie.durationInMinutes) Minutes")
-        print("Rating: \("\(movie.rating)".capitalized)")
-        print("Release Date: \(movie.releaseDate)")
     }
     
     private func handleUpdateMovie(_ movieParam: Movie) -> Movie {
@@ -167,7 +160,7 @@ struct ConsoleManageMovieView {
         }
     }
     
-    private func handleDeleteMovie(_ movie: Movie) -> Movie? {
+    private func handleDeleteMovie(_ movie: Movie) -> Bool {
         if inputReader.readBool(prompt: "Are you sure you want to delete this movie?") {
             do {
                 try manageMovieController.remove(movie: movie)
@@ -177,9 +170,9 @@ struct ConsoleManageMovieView {
             } catch {
                 fatalError("Unexpected error: \(error)")
             }
-            return nil
+            return true
         }
-        return movie
+        return false
     }
     
     private mutating func handleExit() {

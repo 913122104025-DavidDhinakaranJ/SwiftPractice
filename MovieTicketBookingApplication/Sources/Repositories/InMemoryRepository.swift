@@ -3,7 +3,7 @@ import Errors
 import Models
 
 public final class InMemoryRepository: UserRepository, MovieRepository, TheatreRepository, ShowRepository {
-    nonisolated(unsafe) private static var shared: InMemoryRepository = .init()
+    nonisolated(unsafe) public private(set) static var shared: InMemoryRepository = .init()
     
     private final var users: [String: User] = [:]
     private final var movies: [String: Movie] = [:]
@@ -11,8 +11,6 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
     private final var shows: [String: Show] = [:]
     
     private init() {}
-    
-    public static func getInMemoryRepository() -> InMemoryRepository { shared }
     
     public func getAll(role: User.Role) -> [User] {
         var result: [User] = []
@@ -66,20 +64,8 @@ public final class InMemoryRepository: UserRepository, MovieRepository, TheatreR
         movies.values.sorted { $0.title < $1.title }
     }
     
-    public func getMovies(title: String) -> [Movie] {
-        movies.values.filter { $0.title.contains(title) }
-    }
-    
-    public func getMovies(genre: Movie.Genre) -> [Movie] {
-        movies.values.filter { $0.genres.contains(genre) }
-    }
-    
-    public func getMovies(language: Movie.Language) -> [Movie] {
-        movies.values.filter { $0.languages.contains(language) }
-    }
-    
-    public func getMovies(rating: Movie.Rating) -> [Movie] {
-        movies.values.filter { $0.rating == rating }
+    public func getMovies(where matcher: (Movie) -> Bool) -> [Movie] {
+        movies.values.filter(matcher)
     }
     
     public func add(theatre: Theatre) throws(RepoError) {

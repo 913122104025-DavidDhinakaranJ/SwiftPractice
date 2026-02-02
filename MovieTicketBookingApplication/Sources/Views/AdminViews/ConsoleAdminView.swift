@@ -41,6 +41,9 @@ struct ConsoleAdminView {
             print("You don't have the privilege to manage theatres.")
             return
         }
+        
+        var manageTheatreView = ConsoleManageTheatreView(manageTheatreController: ManageTheatreControllerImpl(theatreRepository: appContext.getTheatreRepository()))
+        manageTheatreView.runView()
     }
     
     private func handleManageMovies() {
@@ -49,6 +52,9 @@ struct ConsoleAdminView {
             print("You don't have the privilege to manage movies.")
             return
         }
+        
+        var manageMovieView = ConsoleManageMovieView(manageMovieController: ManageMovieControllerImpl(movieRepository: appContext.getMovieRepository()))
+        manageMovieView.runView()
     }
     
     private func handleManageShows() {
@@ -57,6 +63,9 @@ struct ConsoleAdminView {
             print("You don't have the privilege to manage shows.")
             return
         }
+        
+        var manageShowView = ConsoleManageShowView(manageShowController: ManageShowControllerImpl(showRepository: appContext.getShowRepository(), theatreRepository: appContext.getTheatreRepository(), movieRepository: appContext.getMovieRepository()))
+        manageShowView.runView()
     }
     
     private func handleManageCustomers() {
@@ -65,6 +74,9 @@ struct ConsoleAdminView {
             print("You don't have the privilege to manage customers.")
             return
         }
+        
+        var manageCustomerView = ConsoleManageCustomerView(manageCustomerController: ManageCustomerControllerImpl(userRepository: appContext.getUserRepository()))
+        manageCustomerView.runView()
     }
     
     private func handleManageAdmins() {

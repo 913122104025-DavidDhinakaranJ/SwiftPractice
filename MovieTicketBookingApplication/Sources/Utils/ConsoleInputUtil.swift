@@ -102,18 +102,18 @@ public struct ConsoleInputUtil {
         return getSelection(prompt: prompt, from: options)!
     }
     
-    public func readChoiceWithExit<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element? {
-        displayOptions(options, allowExit: true, stringify: stringify)
+    public func readChoiceWithExit<T: Collection>(prompt: String = "Enter Choice", _ options: T) -> T.Element? {
+        displayOptions(options, allowExit: true)
         return getSelection(prompt: prompt, from: options, allowExit: true)
     }
     
-    public func readChoice<T: Collection>(prompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> T.Element {
-        displayOptions(options, stringify: stringify)
+    public func readChoice<T: Collection>(prompt: String = "Enter Choice", _ options: T) -> T.Element {
+        displayOptions(options)
         return getSelection(prompt: prompt, from: options)!
     }
     
-    public func readMultipleChoices<T: Collection>(mainPrompt: String, subPrompt: String = "Enter Choice", _ options: T, stringify: (T.Element) -> String = { "\($0)" }) -> Set<T.Element> {
-        displayOptions(options, allowExit: true, stringify: stringify)
+    public func readMultipleChoices<T: Collection>(mainPrompt: String, subPrompt: String = "Enter Choice", _ options: T) -> Set<T.Element> {
+        displayOptions(options, allowExit: true)
         print(mainPrompt, terminator: ": \n")
         
         var choices: Set<T.Element> = []
@@ -137,9 +137,9 @@ public struct ConsoleInputUtil {
         }
     }
     
-    private func displayOptions<T: Collection>(_ options: T, allowExit: Bool = false, stringify: (T.Element) -> String = { "\($0)" }) {
+    private func displayOptions<T: Collection>(_ options: T, allowExit: Bool = false) {
         for (index, option) in options.enumerated() {
-            print("\(index + 1). \(stringify(option))")
+            print("\(index + 1). \(option)")
         }
         if allowExit { print("0. Exit") }
     }

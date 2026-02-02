@@ -6,7 +6,7 @@ public protocol ManageShowController {
     func getAllMovies() -> [Movie]
     func getAllTheatres() -> [Theatre]
     
-    func addShow(show: Show) throws(RepoError)
-    func updateShow(show: Show) throws(RepoError)
-    func removeShow(show: Show) throws(RepoError)
+    func addShow(_ show: Show)throws(RepoError)
+    func updateShow(_ show: Show) throws(RepoError)
+    func removeShow(_ show: Show) throws(RepoError)
 }

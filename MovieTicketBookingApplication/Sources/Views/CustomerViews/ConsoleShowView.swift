@@ -28,24 +28,9 @@ struct ConsoleShowView {
         while running {
             let option = inputReader.readMenuOption(MenuOption.allCases)
             switch option {
-            case .viewDetails: showDetails(for: show)
+            case .viewDetails: print(show.detailedDescription)
             case .BookTickets: handleBookTickets(for: show)
             case .exit: running = false
-            }
-        }
-    }
-    
-    private func showDetails(for show: Show) {
-        print("Movie: \(show.movie.title)")
-        print("Theatre: \(show.theatre.name)")
-        print("Cinema Hall: \(show.cinemaHall.name)")
-        print("Timing: \(show.startTime) to \(show.endTime)")
-        print("Base Price: \(show.price)")
-        if show.isSeatsAvailable {
-            print("Available Seats:")
-            show.getAvailableSeats().forEach { showSeat in
-                let seat = showSeat.seat
-                print("\(seat.row)\(seat.seatNumber) - \(seat.type)")
             }
         }
     }
@@ -63,10 +48,7 @@ struct ConsoleShowView {
         
         guard let customer = appContext.getSessionContext().currentUser as! Customer? ?? handleGuestUser() else { return }
         
-        let selectedSeats = inputReader.readMultipleChoices(mainPrompt: "Select Seats to Book", show.getAvailableSeats()) { showSeat in
-            let seat = showSeat.seat
-            return "\(seat.row)\(seat.seatNumber) - \(seat.type)"
-        }
+        let selectedSeats = inputReader.readMultipleChoices(mainPrompt: "Select Seats to Book", show.getAvailableSeats())
         .sorted { showSeat1, showSeat2 in
             let seat1 = showSeat1.seat
             let seat2 = showSeat2.seat
@@ -78,7 +60,7 @@ struct ConsoleShowView {
         
         if selectedSeats.isEmpty { return }
         
-        let booking = Booking(customer: customer, show: show, seats: selectedSeats)
+        let booking = try! Booking(customer: customer, show: show, seats: selectedSeats)
         var paymentView = ConsolePaymentView(payment: booking.payment)
         
         if paymentView.handlePayment(amount: booking.totalPrice) {
@@ -117,6 +99,11 @@ struct ConsoleShowView {
             let user = authView.handleLogin() as! User?
             
             if let customer = user as? Customer {
+                if customer.isBlocked {
+                    print("Your account has been temporarily blocked.")
+                    return nil
+                }
+                
                 print("Login Successful!")
                 appContext.getSessionContext().login(user: customer)
                 return customer
