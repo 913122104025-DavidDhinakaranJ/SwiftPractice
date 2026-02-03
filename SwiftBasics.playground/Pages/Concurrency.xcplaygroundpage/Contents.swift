@@ -1,3 +1,5 @@
+import Foundation
+
 //async and await
 func performTask(id: Int) async -> String {
     try? await Task.sleep(for: .seconds(id))
@@ -62,9 +64,9 @@ let sumOfSquaresTask = Task {
                 return num * num
             }
         }
-        var result: Int128 = 0
+        var result = 0
         for try await num in group {
-            result &+= Int128(num)
+            result += num
         }
         return result
     }
@@ -88,14 +90,16 @@ Task {
 func load() {
     //This task continues running even after load() returns.
     let task = Task {
+        var count = 0
         while !Task.isCancelled {
             try await Task.sleep(for: .seconds(1))
-            print("Working...")
+            count += 1
+            print(count)
         }
     }
     
     Task {
-        try await Task.sleep(for: .seconds(5))
+        try await Task.sleep(for: .seconds(6))
         task.cancel()
     }
 }
@@ -147,4 +151,93 @@ actor GlobalCounter: GlobalActor {
 Task { @GlobalCounter in
     await GlobalCounter.shared.increment()
     await GlobalCounter.shared.getCount()
+}
+
+
+//Legacy Swift Concurrency(GCD)
+//Threads
+let thread = Thread {
+    print("Executed on custom thread")
+}
+thread.start()
+
+//Dispatch Queues
+DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+    print("Executed on main queue")
+}
+
+DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 10) {
+    print("Executed on background queue")
+}
+
+let serialQueue = DispatchQueue(label: "com.example.serialQueue")
+serialQueue.async {
+    sleep(5)
+    print("Executed on serial queue")
+}
+serialQueue.async {
+    sleep(5)
+    print("Executed on serial queue again")
+}
+
+let concurrentQueue = DispatchQueue(label: "com.example.concurrentQueue", attributes: .concurrent)
+concurrentQueue.async {
+    sleep(5)
+    print("Executed on concurrent queue")
+}
+concurrentQueue.async {
+    sleep(5)
+    print("Executed on concurrent queue again")
+}
+
+//Dispatch WorkItem
+let workItem = DispatchWorkItem {
+    print("Executed a work item")
+}
+workItem.perform()
+
+//Dispatch Group
+let group = DispatchGroup()
+group.enter()
+DispatchQueue.global().async {
+    sleep(5)
+    group.leave()
+}
+
+group.notify(queue: .main) {
+    print("All work is done")
+}
+
+//Locks
+final class LockedCounter {
+    private var count: Int = 0
+    private let lock = NSLock()
+    
+    func increment() {
+        lock.lock(); defer { lock.unlock() }
+        count += 1
+    }
+    
+    func get() -> Int {
+        lock.lock(); defer { lock.unlock() }
+        return count
+    }
+}
+
+let lockedCounter = LockedCounter()
+lockedCounter.increment()
+lockedCounter.get()
+
+//Semaphore
+let limit = DispatchSemaphore(value: 2)
+let queue = DispatchQueue.global(qos: .userInitiated)
+
+for i in 0..<10 {
+    queue.async {
+        limit.wait()
+        sleep(1)
+        print("Task \(i) started")
+        print("Task \(i) finished")
+        limit.signal()  
+    }
 }
