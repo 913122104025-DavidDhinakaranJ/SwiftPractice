@@ -27,6 +27,19 @@ public struct Movie {
         self.releaseDate = releaseDate
     }
     
+    private init(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: Set<Genre>, languages: Set<Language>) {
+        self.title = title
+        self.durationInMinutes = durationInMinutes
+        self.rating = rating
+        self.releaseDate = releaseDate
+        self.genres = genres
+        self.languages = languages
+    }
+    
+    public static func rehydrate(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: [Genre], languages: [Language]) -> Movie {
+        .init(title: title, durationInMinutes: durationInMinutes, rating: rating, releaseDate: releaseDate, genres: Set(genres), languages: Set(languages))
+    }
+    
     public mutating func addGenre(_ genre: Genre) {
         genres.insert(genre)
     }

@@ -10,6 +10,18 @@ public struct Theatre {
         self.address = address
     }
     
+    private init (name: String, address: String, halls: [String : CinemaHall]) {
+        self.name = name
+        self.address = address
+        self.halls = halls
+    }
+    
+    public static func rehydrate(name: String, address: String, halls: [CinemaHall]) -> Theatre {
+        halls.reduce(into: Theatre(name: name, address: address, halls: [:])) { result, hall in
+            result.halls[hall.name] = hall
+        }
+    }
+    
     public mutating func addHall(_ cinemaHallName: String) throws(TheatreError) {
         guard halls[cinemaHallName] == nil else { throw TheatreError.cinemaHallAlreadyExists(name: cinemaHallName) }
         
@@ -42,7 +54,7 @@ public struct Theatre {
         }
     }
     
-    public subscript (cinemaHallName: String) -> CinemaHall? {
+    public subscript(cinemaHallName: String) -> CinemaHall? {
         halls[cinemaHallName]
     }
 }

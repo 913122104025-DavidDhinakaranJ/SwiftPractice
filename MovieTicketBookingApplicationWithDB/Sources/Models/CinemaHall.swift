@@ -15,6 +15,18 @@ public struct CinemaHall {
         self.name = name
     }
     
+    private init (name: String, seats: [SeatKey: Seat]) {
+        self.name = name
+        self.seats = seats
+    }
+    
+    public static func rehydrate(name: String, seats: [Seat]) -> CinemaHall {
+        seats.reduce(into: CinemaHall(name: name, seats: [:])) { result, seat in
+            let key = SeatKey(row: seat.row, seatNumber: seat.seatNumber)
+            result.seats[key] = seat
+        }
+    }
+    
     mutating func addSeats(numberOfRows: Int, numberOfSeatsPerRow: Int, type: Seat.SeatType) {
         for _ in 0..<numberOfRows {
             let rowLabel = Self.getRowName(nextRowIndex)

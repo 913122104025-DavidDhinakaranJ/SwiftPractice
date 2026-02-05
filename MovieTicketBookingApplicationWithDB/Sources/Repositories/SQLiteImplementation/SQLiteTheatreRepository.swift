@@ -16,6 +16,10 @@ extension SQLiteRepository: TheatreRepository {
     }
     
     public func getAll() -> [Theatre] {
-        <#code#>
+        do {
+            return try db.prepare(ShowsTable.table).map(makeTheatre)
+        } catch {
+            fatalError("Error in DB")
+        }
     }
 }

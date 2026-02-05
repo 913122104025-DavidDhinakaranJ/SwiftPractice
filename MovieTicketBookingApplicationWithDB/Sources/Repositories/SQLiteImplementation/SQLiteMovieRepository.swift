@@ -16,14 +16,26 @@ extension SQLiteRepository: MovieRepository {
     }
     
     public func isMovieExists(withTitle title: String) -> Bool {
-        <#code#>
+        do {
+            return try db.pluck(MoviesTable.table.filter(MoviesTable.name == title)) != nil
+        } catch {
+            fatalError("Error in DB")
+        }
     }
     
     public func getAll() -> [Movie] {
-        <#code#>
+        do {
+            return try db.prepare(ShowsTable.table).map(makeMovie)
+        } catch {
+            fatalError("Error in DB")
+        }
     }
     
     public func getMovies(where matcher: (Movie) -> Bool) -> [Movie] {
-        <#code#>
+        do {
+            return try db.prepare(ShowsTable.table).map(makeMovie).filter(matcher)
+        } catch {
+            fatalError("Error in DB")
+        }
     }
 }

@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "MovieTicketBookingApplication",
+    platforms: [
+        .macOS(.v10_15),
+    ],
     dependencies: [
         .package(path: "../AuthLib"),
         .package(url: "https://github.com/stephencelis/SQLite.swift", .upToNextMajor(from: "0.15.5"))

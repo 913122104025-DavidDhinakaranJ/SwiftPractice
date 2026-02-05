@@ -13,6 +13,10 @@ public struct Seat {
         self.type = type
     }
     
+    public static func rehydrate(row: String, seatNumber: Int, type: SeatType) -> Seat {
+        .init(row: row, seatNumber: seatNumber, type: type)
+    }
+    
     mutating func changeSeatType(_ type: SeatType) {
         self.type = type
     }

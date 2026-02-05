@@ -24,6 +24,23 @@ public final class Show {
         }
     }
     
+    private init(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) {
+        self.movie = movie
+        self.theatre = theatre
+        self.cinemaHall = cinemaHall
+        self.startTime = startTime
+        self.endTime = endTime
+        self.price = price
+    }
+    
+    public static func rehydrate(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) -> Show {
+        .init(movie: movie, theatre: theatre, cinemaHall: cinemaHall, startTime: startTime, endTime: endTime, price: price)
+    }
+    
+    public func attach(seats: [ShowSeat]) {
+        self.seats = seats
+    }
+    
     public func setTime(startTime: Date, breakTime: Int) {
         self.startTime = startTime
         self.endTime = startTime.addingTimeInterval(TimeInterval((movie.durationInMinutes + breakTime) * 60))

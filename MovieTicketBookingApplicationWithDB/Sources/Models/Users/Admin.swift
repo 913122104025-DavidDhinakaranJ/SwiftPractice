@@ -14,6 +14,16 @@ public final class Admin: User {
         superAdmin ? privileges.formUnion(Privilege.allCases) : ()
     }
     
+    private init(username: String, password: String, privileges: Set<Privilege>, isBlocked: Bool) {
+        self.privileges = privileges
+        super.init(username: username, password: password, role: .admin)
+        if isBlocked { super.block() }
+    }
+    
+    public static func rehydrate(username: String, password: String, privileges: [Privilege], isBlocked: Bool) -> Admin {
+        .init(username: username, password: password, privileges: Set(privileges), isBlocked: isBlocked)
+    }
+    
     public func grant(_ privilege: Privilege) {
         privileges.insert(privilege)
     }

@@ -1,16 +1,26 @@
 public final class ShowSeat: Hashable {
-    private enum Status {
+    public enum Status {
         case available, booked
     }
     
     public let seat: Seat
     public unowned let show: Show
-    private var status: Status = .available
+    public private(set) var status: Status = .available
     public var isAvailable: Bool { status == .available }
     
     public init(seat: Seat, show: Show) {
         self.seat = seat
         self.show = show
+    }
+    
+    private init(seat: Seat, show: Show, status: Status) {
+        self.seat = seat
+        self.show = show
+        self.status = status
+    }
+    
+    public static func rehydrate(seat: Seat, show: Show, status: Status) -> ShowSeat {
+        .init(seat: seat, show: show, status: status)
     }
     
     public func book() {
