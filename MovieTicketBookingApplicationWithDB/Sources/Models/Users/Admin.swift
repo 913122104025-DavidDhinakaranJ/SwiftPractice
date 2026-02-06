@@ -14,14 +14,13 @@ public final class Admin: User {
         superAdmin ? privileges.formUnion(Privilege.allCases) : ()
     }
     
-    private init(username: String, password: String, privileges: Set<Privilege>, isBlocked: Bool) {
+    private init(id: Int64, username: String, passwordHash: String, privileges: Set<Privilege>, isBlocked: Bool) {
         self.privileges = privileges
-        super.init(username: username, password: password, role: .admin)
-        if isBlocked { super.block() }
+        super.init(id: id, username: username, passwordHash: passwordHash, role: .admin, isBlocked: isBlocked)
     }
     
-    public static func rehydrate(username: String, password: String, privileges: [Privilege], isBlocked: Bool) -> Admin {
-        .init(username: username, password: password, privileges: Set(privileges), isBlocked: isBlocked)
+    public static func rehydrate(id: Int64, username: String, passwordHash: String, privileges: [Privilege], isBlocked: Bool) -> Admin {
+        .init(id: id, username: username, passwordHash: passwordHash, privileges: Set(privileges), isBlocked: isBlocked)
     }
     
     public func grant(_ privilege: Privilege) {

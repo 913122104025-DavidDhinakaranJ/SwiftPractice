@@ -6,6 +6,7 @@ public final class Booking {
         case pending, confirmed, cancelled
     }
         
+    public let id: Int64?
     public let bookingDate: Date
     public private(set) var status: Status = .pending
     public unowned let customer: Customer
@@ -17,6 +18,7 @@ public final class Booking {
     public init(customer: Customer, show: Show, seats: [ShowSeat]) throws(BookingError) {
         guard !customer.isBlocked else { throw BookingError.blockedCustomer }
         
+        self.id = nil
         self.bookingDate = Date()
         self.customer = customer
         self.show = show
@@ -25,7 +27,8 @@ public final class Booking {
         self.totalPrice = seats.reduce(0) { $0 + show.price * $1.seat.type.rawValue }
     }
     
-    private init(bookingDate: Date, customer: Customer, show: Show, seats: [ShowSeat], totalPrice: Double, payment: Payment) {
+    private init(id: Int64, bookingDate: Date, status: Status, customer: Customer, show: Show, seats: [ShowSeat], totalPrice: Double, payment: Payment) {
+        self.id = id
         self.bookingDate = bookingDate
         self.customer = customer
         self.show = show
@@ -34,8 +37,8 @@ public final class Booking {
         self.totalPrice = totalPrice
     }
     
-    public static func rehydrate(bookingDate: Date, customer: Customer, show: Show, seats: [ShowSeat], totalPrice: Double, payment: Payment) -> Booking {
-        .init(bookingDate: bookingDate, customer: customer, show: show, seats: seats, totalPrice: totalPrice, payment: payment)
+    public static func rehydrate(id: Int64, bookingDate: Date, status: Status, customer: Customer, show: Show, seats: [ShowSeat], totalPrice: Double, payment: Payment) -> Booking {
+        .init(id: id, bookingDate: bookingDate, status: status, customer: customer, show: show, seats: seats, totalPrice: totalPrice, payment: payment)
     }
     
     public func confirm() {
@@ -53,5 +56,6 @@ public final class Booking {
         seats.forEach { showSeat in
             showSeat.unbook()
         }
+        payment.updateStatusToRefunded()
     }
 }

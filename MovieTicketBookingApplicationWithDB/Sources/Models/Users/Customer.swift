@@ -5,12 +5,12 @@ public final class Customer: User {
         super.init(username: username, password: password, role: .customer)
     }
     
-    private init(username: String, passwordHash: String, isBlocked: Bool) {
-        super.init(username: username, passwordHash: passwordHash, role: .customer, isBlocked: isBlocked)
+    private init(id: Int64, username: String, passwordHash: String, isBlocked: Bool) {
+        super.init(id: id, username: username, passwordHash: passwordHash, role: .customer, isBlocked: isBlocked)
     }
     
-    public static func rehydrate(username: String, passwordHash: String, isBlocked: Bool) -> Customer {
-        .init(username: username, passwordHash: passwordHash, isBlocked: isBlocked)
+    public static func rehydrate(id: Int64, username: String, passwordHash: String, isBlocked: Bool) -> Customer {
+        .init(id: id, username: username, passwordHash: passwordHash, isBlocked: isBlocked)
     }
     
     public func attach(bookings: [Booking]) {

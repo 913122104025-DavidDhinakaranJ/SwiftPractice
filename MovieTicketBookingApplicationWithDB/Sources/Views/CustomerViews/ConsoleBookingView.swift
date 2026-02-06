@@ -45,9 +45,10 @@ struct ConsoleBookingView {
             switch error {
             case .alreadyCancelled:
                 print("This booking is already cancelled.")
-                
             case .showStarted:
                 print("The show has already started. Cannot cancel this booking.")
+            case .blockedCustomer:
+                print("This customer has a blocked status. Cannot cancel this booking.")
             }
         }
     }

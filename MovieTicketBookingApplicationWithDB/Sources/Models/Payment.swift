@@ -5,20 +5,24 @@ public final class Payment {
         case initiated, success, failed, refunded
     }
         
+    public let id: Int64?
     public private(set) var amount: Double = 0.0
     public private(set) var status: PaymentStatus = .initiated
     public private(set) var paymentDate: Date?
     
-    public init() {}
+    public init() {
+        self.id = nil
+    }
     
-    private init(amount: Double, paymentStatus: PaymentStatus, paymentDate: Date?) {
+    private init(id: Int64, amount: Double, paymentStatus: PaymentStatus, paymentDate: Date?) {
+        self.id = id
         self.amount = amount
         self.status = paymentStatus
         self.paymentDate = paymentDate
     }
     
-    public static func rehydrate(amount: Double, paymentStatus: PaymentStatus, paymentDate: Date?) -> Payment {
-        .init(amount: amount, paymentStatus: paymentStatus, paymentDate: paymentDate)
+    public static func rehydrate(id: Int64, amount: Double, paymentStatus: PaymentStatus, paymentDate: Date?) -> Payment {
+        .init(id: id, amount: amount, paymentStatus: paymentStatus, paymentDate: paymentDate)
     }
 
     public func update(amount: Double) {

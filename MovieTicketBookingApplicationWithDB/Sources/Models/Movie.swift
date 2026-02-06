@@ -13,6 +13,7 @@ public struct Movie {
         case g, pg, pg13, adult
     }
         
+    public let id: Int64?
     public let title: String
     public private(set) var genres: Set<Genre> = []
     public private(set) var languages: Set<Language> = []
@@ -21,13 +22,15 @@ public struct Movie {
     public private(set) var releaseDate: Date
     
     public init(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date) {
+        self.id = nil
         self.title = title
         self.durationInMinutes = durationInMinutes
         self.rating = rating
         self.releaseDate = releaseDate
     }
     
-    private init(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: Set<Genre>, languages: Set<Language>) {
+    private init(id: Int64, title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: Set<Genre>, languages: Set<Language>) {
+        self.id = id
         self.title = title
         self.durationInMinutes = durationInMinutes
         self.rating = rating
@@ -36,8 +39,8 @@ public struct Movie {
         self.languages = languages
     }
     
-    public static func rehydrate(title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: [Genre], languages: [Language]) -> Movie {
-        .init(title: title, durationInMinutes: durationInMinutes, rating: rating, releaseDate: releaseDate, genres: Set(genres), languages: Set(languages))
+    public static func rehydrate(id: Int64, title: String, durationInMinutes: Int, rating: Rating, releaseDate: Date, genres: [Genre], languages: [Language]) -> Movie {
+        .init(id: id, title: title, durationInMinutes: durationInMinutes, rating: rating, releaseDate: releaseDate, genres: Set(genres), languages: Set(languages))
     }
     
     public mutating func addGenre(_ genre: Genre) {

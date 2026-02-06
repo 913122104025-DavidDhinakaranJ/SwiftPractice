@@ -12,7 +12,8 @@ extension SQLiteRepository {
     }
     
     func makeCustomer(from row: Row) -> Customer {
-        let customer = Customer.rehydrate(username: row[UsersTable.username],
+        let customer = Customer.rehydrate(id: row[UsersTable.id],
+                                          username: row[UsersTable.username],
                                           passwordHash: row[UsersTable.password],
                                           isBlocked: row[UsersTable.isBlocked])
         let bookings = getBookings(forCustomerId: row[UsersTable.id], contextCustomer: customer)
@@ -23,8 +24,9 @@ extension SQLiteRepository {
     
     func makeAdmin(from row: Row) -> Admin {
         let privileges = getPrivileges(forAdminId: row[UsersTable.id])
-        let admin = Admin.rehydrate(username: row[UsersTable.username],
-                                    password: row[UsersTable.password],
+        let admin = Admin.rehydrate(id: row[UsersTable.id],
+                                    username: row[UsersTable.username],
+                                    passwordHash: row[UsersTable.password],
                                     privileges: privileges,
                                     isBlocked: row[UsersTable.isBlocked])
         
@@ -36,7 +38,8 @@ extension SQLiteRepository {
         let languages = getLanguages(forMovieId: row[MoviesTable.id])
         let rating = MovieRatingMapper.toEnumCase(row[MoviesTable.rating])
         
-        let movie = Movie.rehydrate(title: row[MoviesTable.name],
+        let movie = Movie.rehydrate(id: row[MoviesTable.id],
+                                    title: row[MoviesTable.title],
                                     durationInMinutes: row[MoviesTable.duration],
                                     rating: rating,
                                     releaseDate: row[MoviesTable.releaseDate],
@@ -48,16 +51,18 @@ extension SQLiteRepository {
     
     func makeSeat(from row: Row) -> Seat {
         let seatType = SeatTypeMapper.toEnumCase(row[SeatsTable.type])
-        let seat = Seat.rehydrate(row: row[SeatsTable.row],
-                       seatNumber: row[SeatsTable.seatNumber],
-                       type: seatType)
+        let seat = Seat.rehydrate(id: row[SeatsTable.id],
+                                  row: row[SeatsTable.row],
+                                  seatNumber: row[SeatsTable.seatNumber],
+                                  type: seatType)
         
         return seat
     }
     
     func makeCinemahall(from row: Row) -> CinemaHall {
         let seats = getSeats(forCinemaHallId: row[CinemaHallsTable.id])
-        let cinemaHall = CinemaHall.rehydrate(name: row[CinemaHallsTable.cinemaHallName],
+        let cinemaHall = CinemaHall.rehydrate(id: row[CinemaHallsTable.id],
+                                              name: row[CinemaHallsTable.cinemaHallName],
                                               seats: seats)
 
         return cinemaHall
@@ -65,7 +70,8 @@ extension SQLiteRepository {
     
     func makeTheatre(from row: Row) -> Theatre {
         let cinemaHalls = getCinemaHalls(forTheatreId: row[TheatresTable.id])
-        let theatre = Theatre.rehydrate(name: row[TheatresTable.theatreName],
+        let theatre = Theatre.rehydrate(id: row[TheatresTable.id],
+                                        name: row[TheatresTable.theatreName],
                                         address: row[TheatresTable.address],
                                         halls: cinemaHalls)
         
@@ -77,7 +83,8 @@ extension SQLiteRepository {
         let show = contextShow ?? getShow(forShowId: row[ShowSeatsTable.showId])
         let status = ShowSeatStatusMapper.toEnumCase(row[ShowSeatsTable.status])
         
-        let showSeat = ShowSeat.rehydrate(seat: seat,
+        let showSeat = ShowSeat.rehydrate(id: row[SeatsTable.id],
+                                          seat: seat,
                                           show: show,
                                           status: status)
         
@@ -89,7 +96,8 @@ extension SQLiteRepository {
         let cinemaHall = getCinemaHall(forCinemaHallId: row[ShowsTable.cinemaHallId])
         let theatre = getTheatre(forCinemaHallId: row[ShowsTable.cinemaHallId])
         
-        let show = Show.rehydrate(movie: movie,
+        let show = Show.rehydrate(id: row[ShowsTable.id],
+                                  movie: movie,
                                   theatre: theatre,
                                   cinemaHall: cinemaHall,
                                   startTime: row[ShowsTable.startTime],
@@ -104,7 +112,8 @@ extension SQLiteRepository {
     
     func makePayment(from row: Row) -> Payment {
         let paymentStatus = PaymentStatusMapper.toEnumCase(row[PaymentsTable.status])
-        let payment = Payment.rehydrate(amount: row[PaymentsTable.amount],
+        let payment = Payment.rehydrate(id: row[PaymentsTable.id],
+                                        amount: row[PaymentsTable.amount],
                                         paymentStatus: paymentStatus,
                                         paymentDate: row[PaymentsTable.paymentDate])
         
@@ -117,7 +126,9 @@ extension SQLiteRepository {
         let seats = getShowSeats(forBookingId: row[BookingsTable.id])
         let payment = getPayment(forPaymentId: row[BookingsTable.paymentId])
         
-        let booking = Booking.rehydrate(bookingDate: row[BookingsTable.bookingDate],
+        let booking = Booking.rehydrate(id: row[BookingsTable.id],
+                                        bookingDate: row[BookingsTable.bookingDate],
+                                        status: BookingStatusMapper.toEnumCase(row[BookingsTable.status]),
                                         customer: customer,
                                         show: show,
                                         seats: seats,
@@ -127,138 +138,78 @@ extension SQLiteRepository {
         return booking
     }
     
-    func getPrivileges(forAdminId adminId: Int) -> [Admin.Privilege] {
-        do {
-            return try db.prepare(AdminPrivilegesTable.table.filter(AdminPrivilegesTable.adminId == adminId))
+    func getPrivileges(forAdminId adminId: Int64) -> [Admin.Privilege] {
+        return try! db.prepare(AdminPrivilegesTable.table.filter(AdminPrivilegesTable.adminId == adminId))
                 .map { AdminPrivilegeMapper.toEnumCase($0[AdminPrivilegesTable.privilege]) }
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getBookings(forCustomerId customerId: Int, contextCustomer: Customer) -> [Booking] {
-        do {
-            return try db.prepare(BookingsTable.table.filter(BookingsTable.customerId == customerId))
+    func getBookings(forCustomerId customerId: Int64, contextCustomer: Customer) -> [Booking] {
+        return try! db.prepare(BookingsTable.table.filter(BookingsTable.customerId == customerId))
                 .map { makeBooking(from: $0, contextCustomer: contextCustomer) }
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getGenres(forMovieId movieId: Int) -> [Movie.Genre] {
-        do {
-            return try db.prepare(MovieGenresTable.table.filter(MovieGenresTable.movieId == movieId))
+    func getGenres(forMovieId movieId: Int64) -> [Movie.Genre] {
+        return try! db.prepare(MovieGenresTable.table.filter(MovieGenresTable.movieId == movieId))
                 .map { MovieGenreMapper.toEnumCase($0[MovieGenresTable.genre]) }
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getLanguages(forMovieId movieId: Int) -> [Movie.Language] {
-        do {
-            return try db.prepare(MovieLanguagesTable.table.filter(MovieLanguagesTable.movieId == movieId))
+    func getLanguages(forMovieId movieId: Int64) -> [Movie.Language] {
+        return try! db.prepare(MovieLanguagesTable.table.filter(MovieLanguagesTable.movieId == movieId))
                 .map { MovieLanguageMapper.toEnumCase($0[MovieLanguagesTable.language]) }
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getSeats(forCinemaHallId cinemaHallId: Int) -> [Seat] {
-        do {
-            return try db.prepare(SeatsTable.table.filter(SeatsTable.cinemaHallId == cinemaHallId))
+    func getSeats(forCinemaHallId cinemaHallId: Int64) -> [Seat] {
+        return try! db.prepare(SeatsTable.table.filter(SeatsTable.cinemaHallId == cinemaHallId))
                 .map(makeSeat)
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getCinemaHalls(forTheatreId theatreId: Int) -> [CinemaHall] {
-        do {
-            return try db.prepare(CinemaHallsTable.table.filter(CinemaHallsTable.theatreId == theatreId))
+    func getCinemaHalls(forTheatreId theatreId: Int64) -> [CinemaHall] {
+        return try! db.prepare(CinemaHallsTable.table.filter(CinemaHallsTable.theatreId == theatreId))
                 .map(makeCinemahall)
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getMovie(forMovieId movieId: Int) -> Movie {
-        do {
-            let row = try db.pluck(MoviesTable.table.filter(MoviesTable.id == movieId))!
-            return makeMovie(from: row)
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getMovie(forMovieId movieId: Int64) -> Movie {
+        let row = try! db.pluck(MoviesTable.table.filter(MoviesTable.id == movieId))!
+        return makeMovie(from: row)
     }
     
-    func getTheatre(forCinemaHallId cinemaHallId: Int) -> Theatre {
-        do {
-            let theatreId = try db.pluck(CinemaHallsTable.table.filter(CinemaHallsTable.id == cinemaHallId))!.get(CinemaHallsTable.theatreId)
-            return try db.pluck(TheatresTable.table.filter(TheatresTable.id == theatreId)).map(makeTheatre)!
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getTheatre(forCinemaHallId cinemaHallId: Int64) -> Theatre {
+        let theatreId = try! db.pluck(CinemaHallsTable.table.filter(CinemaHallsTable.id == cinemaHallId))!.get(CinemaHallsTable.theatreId)
+        return try! db.pluck(TheatresTable.table.filter(TheatresTable.id == theatreId)).map(makeTheatre)!
     }
     
-    func getCinemaHall(forCinemaHallId cinemaHallId: Int) -> CinemaHall {
-        do {
-            return try db.pluck(CinemaHallsTable.table.filter(CinemaHallsTable.id == cinemaHallId)).map(makeCinemahall)!
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getCinemaHall(forCinemaHallId cinemaHallId: Int64) -> CinemaHall {
+        return try! db.pluck(CinemaHallsTable.table.filter(CinemaHallsTable.id == cinemaHallId)).map(makeCinemahall)!
     }
     
-    func getShowSeats(forShowId showId: Int, contextShow: Show) -> [ShowSeat] {
-        do {
-            return try db.prepare(ShowSeatsTable.table.filter(ShowSeatsTable.showId == showId))
+    func getShowSeats(forShowId showId: Int64, contextShow: Show) -> [ShowSeat] {
+        return try! db.prepare(ShowSeatsTable.table.filter(ShowSeatsTable.showId == showId))
                 .map { makeShowSeat(from: $0, contextShow: contextShow) }
-        } catch {
-            fatalError("Error in DB")
-        }
     }
     
-    func getSeat(forSeatId seatId: Int) -> Seat {
-        do {
-            return try db.pluck(SeatsTable.table.filter(SeatsTable.id == seatId)).map(makeSeat)!
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getSeat(forSeatId seatId: Int64) -> Seat {
+        return try! db.pluck(SeatsTable.table.filter(SeatsTable.id == seatId)).map(makeSeat)!
     }
     
-    func getShow(forShowId showId: Int) -> Show {
-        do {
-            let row = try db.pluck(ShowsTable.table.filter(ShowsTable.id == showId)).map(makeShow)!
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getShow(forShowId showId: Int64) -> Show {
+        return try! db.pluck(ShowsTable.table.filter(ShowsTable.id == showId)).map(makeShow)!
     }
     
-    func getCustomer(forCustomerId customerId: Int) -> Customer {
-        do {
-            let row = try db.pluck(UsersTable.table.filter(UsersTable.id == customerId)).map(makeCustomer)!
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getCustomer(forCustomerId customerId: Int64) -> Customer {
+        return try! db.pluck(UsersTable.table.filter(UsersTable.id == customerId)).map(makeCustomer)!
     }
     
-    func getShowSeats(forBookingId bookingId: Int) -> [ShowSeat] {
-        do {
-            return try db.prepare(BookingsTable.table.filter(BookingSeatsTable.bookingId == bookingId))
-                .map { row in
-                    let showSeatId = try row.get(BookingSeatsTable.showSeatId)
-                    let row = try db.pluck(ShowSeatsTable.table.filter(ShowSeatsTable.id == showSeatId))!
-                    return makeShowSeat(from: row)
-                }
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getShowSeats(forBookingId bookingId: Int64) -> [ShowSeat] {
+        return try! db.prepare(BookingsTable.table.filter(BookingSeatsTable.bookingId == bookingId))
+            .map { row in
+                let showSeatId = try row.get(BookingSeatsTable.showSeatId)
+                let row = try db.pluck(ShowSeatsTable.table.filter(ShowSeatsTable.id == showSeatId))!
+                return makeShowSeat(from: row)
+            }
     }
     
-    func getPayment(forPaymentId paymentId: Int) -> Payment {
-        do {
-            let row = try db.pluck(PaymentsTable.table.filter(PaymentsTable.id == paymentId))!
-            return makePayment(from: row)
-        } catch {
-            fatalError("Error in DB")
-        }
+    func getPayment(forPaymentId paymentId: Int64) -> Payment {
+        let row = try! db.pluck(PaymentsTable.table.filter(PaymentsTable.id == paymentId))!
+        return makePayment(from: row)
     }
 }

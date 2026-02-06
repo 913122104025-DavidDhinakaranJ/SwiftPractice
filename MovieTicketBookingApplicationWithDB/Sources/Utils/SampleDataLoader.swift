@@ -92,7 +92,7 @@ public enum SampleDataLoader {
         // =====================================================
         // Theatre 1: Grand Cinema
         // =====================================================
-        var grandCinema = Theatre(
+        let grandCinema = Theatre(
             name: "Grand Cinema",
             address: "123 Main Road, Chennai"
         )
@@ -132,7 +132,7 @@ public enum SampleDataLoader {
         // =====================================================
         // Theatre 2: City Multiplex
         // =====================================================
-        var cityMultiplex = Theatre(
+        let cityMultiplex = Theatre(
             name: "City Multiplex",
             address: "45 Lake View Street, Bengaluru"
         )

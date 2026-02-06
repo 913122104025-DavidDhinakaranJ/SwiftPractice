@@ -8,20 +8,23 @@ public struct CinemaHall {
     
     private var nextRowIndex: Int = 0
     
+    public let id: Int64?
     public let name: String
     private var seats: [SeatKey : Seat] = [:]
     
     init(name: String) {
+        self.id = nil
         self.name = name
     }
     
-    private init (name: String, seats: [SeatKey: Seat]) {
+    private init (id: Int64, name: String, seats: [SeatKey: Seat]) {
+        self.id = id
         self.name = name
         self.seats = seats
     }
     
-    public static func rehydrate(name: String, seats: [Seat]) -> CinemaHall {
-        seats.reduce(into: CinemaHall(name: name, seats: [:])) { result, seat in
+    public static func rehydrate(id: Int64, name: String, seats: [Seat]) -> CinemaHall {
+        seats.reduce(into: CinemaHall(id: id, name: name, seats: [:])) { result, seat in
             let key = SeatKey(row: seat.row, seatNumber: seat.seatNumber)
             result.seats[key] = seat
         }

@@ -13,15 +13,15 @@ public struct ManageMovieControllerImpl: ManageMovieController {
         movieRepository.getAll()
     }
     
-    public func add(movie: Models.Movie) throws(Errors.RepoError) {
+    public func add(movie: Models.Movie) throws(RepoError) {
         try movieRepository.add(movie: movie)
     }
     
-    public func update(movie: Models.Movie) throws(Errors.RepoError) {
+    public func update(movie: Models.Movie) throws(RepoError) {
         try movieRepository.update(movie: movie)
     }
     
-    public func remove(movie: Models.Movie) throws(Errors.RepoError) {
+    public func remove(movie: Models.Movie) throws(RepoError) {
         try movieRepository.delete(movie: movie)
     }
 }

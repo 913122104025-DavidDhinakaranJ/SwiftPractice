@@ -8,7 +8,7 @@ public class AuthControllerImpl: AuthController {
     }
     
     public func handleRegistration(username: String, password: String) throws(AuthError) -> any AuthenticatableUser {
-        if userRepository.isUser(withName: username) { throw .userAlreadyExists }
+        if userRepository.isUserexists(withName: username) { throw .userAlreadyExists }
         
         let newUser = factory.createUser(username: username, password: password)
         userRepository.save(user: newUser)

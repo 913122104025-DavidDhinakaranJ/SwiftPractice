@@ -1,6 +1,7 @@
 import Foundation
 
 public final class Show {
+    public let id: Int64?
     public let movie: Movie
     public let theatre: Theatre
     public let cinemaHall: CinemaHall
@@ -12,6 +13,7 @@ public final class Show {
     public var isSeatsAvailable: Bool { seats.contains(where: { $0.isAvailable }) }
     
     public init(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, breakTime: Int, price: Double) {
+        self.id = nil
         self.movie = movie
         self.theatre = theatre
         self.cinemaHall = cinemaHall
@@ -24,7 +26,8 @@ public final class Show {
         }
     }
     
-    private init(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) {
+    private init(id: Int64, movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) {
+        self.id = id
         self.movie = movie
         self.theatre = theatre
         self.cinemaHall = cinemaHall
@@ -33,8 +36,8 @@ public final class Show {
         self.price = price
     }
     
-    public static func rehydrate(movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) -> Show {
-        .init(movie: movie, theatre: theatre, cinemaHall: cinemaHall, startTime: startTime, endTime: endTime, price: price)
+    public static func rehydrate(id: Int64, movie: Movie, theatre: Theatre, cinemaHall: CinemaHall, startTime: Date, endTime: Date, price: Double) -> Show {
+        .init(id: id, movie: movie, theatre: theatre, cinemaHall: cinemaHall, startTime: startTime, endTime: endTime, price: price)
     }
     
     public func attach(seats: [ShowSeat]) {

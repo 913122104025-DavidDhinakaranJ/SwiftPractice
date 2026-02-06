@@ -1,4 +1,5 @@
 import SQLite
+import Foundation
 
 public final class SQLiteRepository: @unchecked Sendable {
     public static let shared = SQLiteRepository()
@@ -6,7 +7,10 @@ public final class SQLiteRepository: @unchecked Sendable {
     
     private init() {
         do {
-            db = try Connection("db.sqlite3")
+            let fileManager = FileManager.default
+            let documentsURL = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+            let dbURL = documentsURL.appendingPathComponent("db.sqlite3")
+            db = try Connection(dbURL.path)
             try db.run("PRAGMA foreign_keys = ON")
             try createTables()
         } catch {
@@ -89,7 +93,7 @@ public final class SQLiteRepository: @unchecked Sendable {
     private func createMovieTable() throws {
         try db.run(MoviesTable.table.create(ifNotExists: true) { t in
             t.column(MoviesTable.id, primaryKey: .autoincrement)
-            t.column(MoviesTable.name, unique: true)
+            t.column(MoviesTable.title, unique: true)
             t.column(MoviesTable.duration)
             t.column(MoviesTable.rating)
             t.column(MoviesTable.releaseDate)
@@ -159,6 +163,8 @@ public final class SQLiteRepository: @unchecked Sendable {
             
             t.foreignKey(ShowsTable.movieId, references: MoviesTable.table, MoviesTable.id, delete: .cascade)
             t.foreignKey(ShowsTable.cinemaHallId, references: CinemaHallsTable.table, CinemaHallsTable.id, delete: .cascade)
+            
+            t.unique(ShowsTable.cinemaHallId, ShowsTable.startTime)
         })
     }
     

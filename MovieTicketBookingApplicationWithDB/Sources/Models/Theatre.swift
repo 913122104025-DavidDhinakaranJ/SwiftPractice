@@ -1,35 +1,38 @@
 import Errors
 
-public struct Theatre {
+public class Theatre {
+    public private(set) var id: Int64?
     public let name: String
     public let address: String
     private var halls: [String : CinemaHall] = [:]
     
     public init(name: String, address: String) {
+        self.id = nil
         self.name = name
         self.address = address
     }
     
-    private init (name: String, address: String, halls: [String : CinemaHall]) {
+    private init(id: Int64, name: String, address: String, halls: [String : CinemaHall]) {
+        self.id = id
         self.name = name
         self.address = address
         self.halls = halls
     }
     
-    public static func rehydrate(name: String, address: String, halls: [CinemaHall]) -> Theatre {
-        halls.reduce(into: Theatre(name: name, address: address, halls: [:])) { result, hall in
+    public static func rehydrate(id: Int64, name: String, address: String, halls: [CinemaHall]) -> Theatre {
+        halls.reduce(into: Theatre(id: id, name: name, address: address, halls: [:])) { result, hall in
             result.halls[hall.name] = hall
         }
     }
     
-    public mutating func addHall(_ cinemaHallName: String) throws(TheatreError) {
+    public func addHall(_ cinemaHallName: String) throws(TheatreError) {
         guard halls[cinemaHallName] == nil else { throw TheatreError.cinemaHallAlreadyExists(name: cinemaHallName) }
         
         let newHall = CinemaHall(name: cinemaHallName)
         halls[cinemaHallName] = newHall
     }
     
-    public mutating func addSeatsToHall(_ cinemaHallName: String, numberOfRows: Int, numberOfSeatsPerRow: Int, type: Seat.SeatType) throws(TheatreError) {
+    public func addSeatsToHall(_ cinemaHallName: String, numberOfRows: Int, numberOfSeatsPerRow: Int, type: Seat.SeatType) throws(TheatreError) {
         guard halls[cinemaHallName] != nil else { throw TheatreError.cinemaHallNotFound(name: cinemaHallName) }
         halls[cinemaHallName]!.addSeats(numberOfRows: numberOfRows, numberOfSeatsPerRow: numberOfSeatsPerRow, type: type)
     }
@@ -38,20 +41,24 @@ public struct Theatre {
         halls.values.sorted { $0.name < $1.name }
     }
     
-    public mutating func changeSeatType(inHall cinemaHallName: String, row: String, seatNumber: Int, type: Seat.SeatType) throws(TheatreError) {
+    public func changeSeatType(inHall cinemaHallName: String, row: String, seatNumber: Int, type: Seat.SeatType) throws(TheatreError) {
         guard halls[cinemaHallName] != nil else { throw TheatreError.cinemaHallNotFound(name: cinemaHallName) }
         try halls[cinemaHallName]!.changeSeatType(row: row, seatNumber: seatNumber, to: type)
     }
     
-    public mutating func removeSeatInHall(_ cinemaHallName: String, row: String, seatNumber: Int) throws(TheatreError) {
+    public func removeSeatInHall(_ cinemaHallName: String, row: String, seatNumber: Int) throws(TheatreError) {
         guard halls[cinemaHallName] != nil else { throw TheatreError.cinemaHallNotFound(name: cinemaHallName) }
         try halls[cinemaHallName]!.removeSeat(row: row, seatNumber: seatNumber)
     }
 
-    public mutating func removeHall(_ cinemaHallName: String) throws(TheatreError) {
+    public func removeHall(_ cinemaHallName: String) throws(TheatreError) {
         if halls.removeValue(forKey: cinemaHallName) == nil {
             throw TheatreError.cinemaHallNotFound(name: cinemaHallName)
         }
+    }
+    
+    public func setId(_ id: Int64) {
+        if self.id == nil { self.id = id }
     }
     
     public subscript(cinemaHallName: String) -> CinemaHall? {

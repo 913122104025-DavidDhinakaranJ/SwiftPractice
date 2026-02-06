@@ -61,7 +61,7 @@ public struct ConsoleMainView {
                 print("Your account has been temporarily blocked.")
                 return
             }
-            print("Registration Successful!")
+            print("Login Successful!")
             handleRunLoginView(user)
         }
     }

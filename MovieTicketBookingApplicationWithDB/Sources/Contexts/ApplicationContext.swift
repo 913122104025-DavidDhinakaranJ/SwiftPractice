@@ -5,10 +5,10 @@ import Utils
 public final class ApplicationContext {
     nonisolated(unsafe) private static let shared = ApplicationContext()
     
-    private let userRepository: some UserRepository = InMemoryRepository.shared
-    private let movieRepository: some MovieRepository = InMemoryRepository.shared
-    private let theatreRepository: some TheatreRepository = InMemoryRepository.shared
-    private let showRepository: some ShowRepository = InMemoryRepository.shared
+    private let userRepository: some UserRepository = SQLiteRepository.shared
+    private let movieRepository: some MovieRepository = SQLiteRepository.shared
+    private let theatreRepository: some TheatreRepository = SQLiteRepository.shared
+    private let showRepository: some ShowRepository = SQLiteRepository.shared
     
     private let customerFactory = CustomerFactory()
     private let adminFactory = AdminFactory()
