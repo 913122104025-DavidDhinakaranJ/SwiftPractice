@@ -76,8 +76,8 @@ public final class SQLiteRepository: @unchecked Sendable {
             t.column(BookingSeatsTable.showSeatId)
             
             t.primaryKey(BookingSeatsTable.bookingId, BookingSeatsTable.showSeatId)
-            t.foreignKey(BookingSeatsTable.bookingId, references: BookingsTable.table, BookingsTable.id)
-            t.foreignKey(BookingSeatsTable.showSeatId, references: ShowSeatsTable.table, ShowSeatsTable.id)
+            t.foreignKey(BookingSeatsTable.bookingId, references: BookingsTable.table, BookingsTable.id, delete: .cascade)
+            t.foreignKey(BookingSeatsTable.showSeatId, references: ShowSeatsTable.table, ShowSeatsTable.id, delete: .cascade)
         })
     }
     

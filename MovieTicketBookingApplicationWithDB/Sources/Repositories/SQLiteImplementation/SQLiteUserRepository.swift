@@ -14,20 +14,22 @@ extension SQLiteRepository: UserRepository {
             try db.transaction {
                 let userId: Int64
                 if let id = user.id {
-                    let updateUser = UsersTable.table.filter(UsersTable.id == id).update(UsersTable.username <- user.username,
-                                                                                             UsersTable.password <- user.passwordHashForStorage,
-                                                                                             UsersTable.role <- UserRoleMapper.toString(user.role),
-                                                                                             UsersTable.isBlocked <- user.isBlocked
+                    let updateUser = UsersTable.table.filter(UsersTable.id == id).update(
+                        UsersTable.username <- user.username,
+                        UsersTable.password <- user.passwordHashForStorage,
+                        UsersTable.role <- UserRoleMapper.toString(user.role),
+                        UsersTable.isBlocked <- user.isBlocked
                     )
                     
                     try self.db.run(updateUser)
                     userId = id
                     
                 } else {
-                    let insertUser = UsersTable.table.insert(UsersTable.username <- user.username,
-                                                             UsersTable.password <- user.passwordHashForStorage,
-                                                             UsersTable.role <- UserRoleMapper.toString(user.role),
-                                                             UsersTable.isBlocked <- user.isBlocked
+                    let insertUser = UsersTable.table.insert(
+                        UsersTable.username <- user.username,
+                        UsersTable.password <- user.passwordHashForStorage,
+                        UsersTable.role <- UserRoleMapper.toString(user.role),
+                        UsersTable.isBlocked <- user.isBlocked
                     )
                     userId = try self.db.run(insertUser)
                     user.setId(userId)
@@ -58,16 +60,20 @@ extension SQLiteRepository: UserRepository {
         try db.run(deleteOldPrivileges)
         
         for privilege in privileges {
-            let insertPrivilege = AdminPrivilegesTable.table.insert(AdminPrivilegesTable.adminId <- userId,
-                                                                    AdminPrivilegesTable.privilege <- AdminPrivilegeMapper.toString(privilege))
+            let insertPrivilege = AdminPrivilegesTable.table.insert(
+                AdminPrivilegesTable.adminId <- userId,
+                AdminPrivilegesTable.privilege <- AdminPrivilegeMapper.toString(privilege)
+            )
             try db.run(insertPrivilege)
         }
     }
     
     private func saveCustomerBookings(_ bookings: [Booking], userId: Int64) throws {
         for booking in bookings {
-            if let bookingId = booking.id {
-                let update = BookingsTable.table.filter(BookingsTable.id == bookingId).update(
+            let bookingId: Int64
+            if let id = booking.id {
+                bookingId = id
+                let update = BookingsTable.table.filter(BookingsTable.id == id).update(
                     BookingsTable.customerId <- userId,
                     BookingsTable.bookingDate <- booking.bookingDate,
                     BookingsTable.status <- BookingStatusMapper.toString(booking.status),
@@ -89,8 +95,10 @@ extension SQLiteRepository: UserRepository {
                     BookingsTable.paymentId <- paymentId
                 )
                 
-                try db.run(insert)
+                bookingId = try db.run(insert)
             }
+            
+            try updateShowSeatAvailability(showSeats: booking.seats, bookingId: bookingId)
         }
     }
     

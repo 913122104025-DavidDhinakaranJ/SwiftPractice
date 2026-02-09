@@ -69,6 +69,7 @@ extension SQLiteRepository: TheatreRepository {
         } catch let error as RepoError {
             throw error
         } catch {
+            print(error)
             throw RepoError.dbFailure
         }
     }
